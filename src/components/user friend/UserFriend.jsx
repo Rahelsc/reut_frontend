@@ -1,11 +1,12 @@
 import "./UserFriend.css";
 
 const UserFriend = ({ user }) => {
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <div>
       <div className="rightbarFollowing">
         <img
-          src={user.profilePicture}
+          src={PF + user.profilePicture}
           alt=""
           className="rightbarFollowingImg"
         />

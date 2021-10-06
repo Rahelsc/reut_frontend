@@ -5,6 +5,8 @@ import Rightbar from "../../components/rightbar/Rightbar.jsx";
 import Topbar from "../../components/topbar/Topbar.jsx";
 
 const Profile = () => {
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   return (
     <>
       <Topbar />
@@ -13,23 +15,21 @@ const Profile = () => {
         <div className="profileRight">
           <div className="profileRightTop">
             <div className="profileCover">
+              <img className="profileCoverImg" src={PF+"post/3.jpeg"} alt="" />
               <img
-                className="profileCoverImg"
-                src="assets/post/3.jpeg"
+                className="profileUserImg"
+                src={PF+"person/7.jpeg"}
                 alt=""
               />
-              <img className="profileUserImg" src="assets/person/7.jpeg" alt="" />
             </div>
             <div className="profileInfo">
               <h4 className="profileInfoName">Rachel Schwartz</h4>
-              <p className="profileInfoDesc">
-                Lorem i
-              </p>
+              <p className="profileInfoDesc">Lorem i</p>
             </div>
           </div>
           <div className="profileRightBottom">
             <Feed />
-            <Rightbar profile/>
+            <Rightbar profile />
           </div>
         </div>
       </div>
