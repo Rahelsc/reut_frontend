@@ -7,6 +7,8 @@
   flex: 3;
   height: calc(100vh - 50px);
   overflow-y: scroll;
+  position: sticky;
+  top: 20px;
 }
 
 ::-webkit-scrollbar {
@@ -55,18 +57,4 @@
   padding: 0;
   margin: 0;
   list-style: none;
-}
-
-.leftbarFriend {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.leftbarFriendImg {
-  width: 3vw;
-  height: 3vw;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
 }
