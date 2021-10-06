@@ -1,0 +1,44 @@
+import { Chat, Notifications, Person, Search } from "@material-ui/icons";
+import "./topbar.css";
+
+const Topbar = () => {
+  return (
+    <div className="topbarContainer">
+      <div className="topbarLeft">
+        <span className="logo">Reut</span>
+      </div>
+      <div className="topbarCenter">
+        <div className="searchbar">
+          <Search className="searchIcon" fontSize="small" />
+          <input
+            placeholder="Search for friend, post or video"
+            className="searchInput"
+          />
+        </div>
+      </div>
+      <div className="topbarRight">
+        <div className="topbarLinks">
+          <span className="topbarLink">Hompepage</span>
+          <span className="topbarLink">Timeline</span>
+        </div>
+        <div className="topbarIcons">
+          <div className="topbarIconItem">
+            <Person fontSize="medium" />
+            <span className="topbarIconBadge">1</span>
+          </div>
+          <div className="topbarIconItem">
+            <Chat fontSize="medium" />
+            <span className="topbarIconBadge">2</span>
+          </div>
+          <div className="topbarIconItem">
+            <Notifications fontSize="medium" />
+            <span className="topbarIconBadge">3</span>
+          </div>
+        </div>
+        <img src="/assets/person/1.jpeg" alt="" className="topbarImg" />
+      </div>
+    </div>
+  );
+};
+
+export default Topbar;

@@ -1,0 +1,8 @@
+:root {
+  --purple: #8a2be2;
+  --gray: #eff2f5;
+}
+
+.rightbarContainer {
+  flex: 3.5;
+}

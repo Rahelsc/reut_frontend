@@ -1,0 +1,12 @@
+:root {
+  --purple: #8a2be2;
+  --gray: #eff2f5;
+}
+
+.feedContainer{
+    flex: 5.5;
+}
+
+.feedWrapper{
+  padding: 20px;
+}
