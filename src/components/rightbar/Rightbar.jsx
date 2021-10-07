@@ -3,7 +3,7 @@ import { Users } from "../../dummyData";
 import Online from "../online/Online";
 import UserFriend from "../user friend/UserFriend";
 
-const Rightbar = ({ profile }) => {
+const Rightbar = ({ user }) => {
   const HomeRightBar = () => {
     return (
       <>
@@ -25,6 +25,12 @@ const Rightbar = ({ profile }) => {
     );
   };
 
+  const relationshipStatus = {
+    1: "Single",
+    2: "Married",
+    3: "In a relationship",
+  };
+
   const ProfileRightBar = () => {
     return (
       <>
@@ -32,15 +38,17 @@ const Rightbar = ({ profile }) => {
         <div className="rightbarInfo">
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">City:</span>
-            <span className="rightbarInfoValue">New York</span>
+            <span className="rightbarInfoValue">{user.city}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">From:</span>
-            <span className="rightbarInfoValue">Madrid</span>
+            <span className="rightbarInfoValue">{user.from}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Relationship:</span>
-            <span className="rightbarInfoValue">Single</span>
+            <span className="rightbarInfoValue">
+              {relationshipStatus[user.relationship]}
+            </span>
           </div>
         </div>
         <h4 className="rightbarTitle">User friends</h4>
@@ -55,7 +63,7 @@ const Rightbar = ({ profile }) => {
   return (
     <div className="rightbarContainer">
       <div className="rightbarWrapper">
-        {profile ? <ProfileRightBar /> : <HomeRightBar />}
+        {user ? <ProfileRightBar /> : <HomeRightBar />}
       </div>
     </div>
   );
