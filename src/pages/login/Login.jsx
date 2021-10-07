@@ -1,6 +1,22 @@
+import { useContext, useRef } from "react";
 import "./login.css";
+import { loginCall } from "../../apiCalls";
+import { AuthContext } from "../../context/AuthContext";
+import { CircularProgress } from "@material-ui/core";
 
 const Login = () => {
+  const email = useRef();
+  const password = useRef();
+  const { user, isFetching, error, dispatch } = useContext(AuthContext);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    loginCall(
+      { email: email.current.value, password: password.current.value },
+      dispatch
+    );
+  };
+
   return (
     <div className="login">
       <div className="loginWrapper">
@@ -11,21 +27,38 @@ const Login = () => {
           </span>
         </div>
         <div className="loginRight">
-          <div className="loginBox">
-            <input placeholder="Email" type="email" className="loginInput" />
+          <form className="loginBox" onSubmit={handleClick}>
             <input
+              placeholder="Email"
+              type="email"
+              className="loginInput"
+              ref={email}
+              required
+            />
+            <input
+              required
+              minLength="10"
+              ref={password}
               placeholder="Password"
               type="password"
               className="loginInput"
             />
-            <button className="loginButon" type="submit">
-              Log In
+            <button className="loginButon" type="submit" disabled={isFetching}>
+              {isFetching ? (
+                <CircularProgress color="white" size="20px" />
+              ) : (
+                "Log In"
+              )}
             </button>
-          </div>
+          </form>
           <div className="loginNewActions">
             <span className="Forgot">Forgot Password?</span>
             <button className="loginRegisterButon" type="submit">
-              Create an account
+              {isFetching ? (
+                <CircularProgress color="white" size="20px" />
+              ) : (
+                "Create an account"
+              )}
             </button>
           </div>
         </div>

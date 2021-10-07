@@ -57,7 +57,7 @@ const Post = ({ post }) => {
             <img
               onClick={likeHandler}
               className="likeIcon"
-              src={isliked ? `${PF}heart.png` : `${PF}not liked.png`}
+              src={isliked ? `${PF}heart.png` : `${PF}not_liked.png`}
               alt=""
             />
             <span className="postLikeCounter">{like} people like it</span>

@@ -33,7 +33,6 @@
   border-right: 2px dashed var(--purple);
 }
 
-
 .loginLogo {
   font-size: 8em;
   font-weight: 800;
@@ -70,6 +69,14 @@
 
 .loginInput:focus {
   outline: none;
+}
+
+.loginButon:focus {
+  outline: none;
+}
+
+.loginButon:disabled {
+  cursor: not-allowed;
 }
 
 .loginButon,

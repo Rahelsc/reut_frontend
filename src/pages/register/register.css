@@ -12,6 +12,10 @@
   justify-content: center;
 }
 
+.accountButton {
+  margin-top: 20px;
+}
+
 .registerWrapper {
   width: 70%;
   height: 70%;

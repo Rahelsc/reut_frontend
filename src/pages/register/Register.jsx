@@ -1,6 +1,34 @@
+import axios from "axios";
+import { useRef } from "react";
 import "./register.css";
+import { useHistory } from "react-router";
 
 const Register = () => {
+  const username = useRef();
+  const email = useRef();
+  const password = useRef();
+  const passwordAgain = useRef();
+  const history = useHistory();
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    if (passwordAgain.current.value !== password.current.value) {
+      passwordAgain.current.setCustomValidity("password doesn't match");
+    } else {
+      const user = {
+        username: username.current.value,
+        email: email.current.value,
+        password: password.current.value,
+      };
+      try {
+        await axios.post("/auth/register", user);
+        history.push("/login");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <div className="register">
       <div className="registerWrapper">
@@ -11,16 +39,34 @@ const Register = () => {
           </span>
         </div>
         <div className="registerRight">
-          <div className="registerBox">
-            <input placeholder="User Name" type="text" className="registerInput" />
-
-            <input placeholder="Email" type="email" className="registerInput" />
+          <form className="registerBox" onSubmit={handleClick}>
             <input
-              placeholder="Password"
-              type="password"
+              required
+              ref={username}
+              placeholder="User Name"
+              type="text"
+              className="registerInput"
+            />
+
+            <input
+              placeholder="Email"
+              required
+              ref={email}
+              type="email"
               className="registerInput"
             />
             <input
+              required
+              ref={password}
+              placeholder="Password"
+              type="password"
+              className="registerInput"
+              minLength="10"
+            />
+            <input
+              minLength="10"
+              required
+              ref={passwordAgain}
               placeholder="Password Again"
               type="password"
               className="registerInput"
@@ -28,9 +74,8 @@ const Register = () => {
             <button className="registerButon" type="submit">
               Sign Up
             </button>
-
-            <button className="registerButon">Login to account</button>
-          </div>
+          </form>
+          <button className="registerButon accountButton">Login to account</button>
         </div>
       </div>
     </div>
