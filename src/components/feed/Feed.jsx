@@ -19,7 +19,7 @@ const Feed = ({ username }) => {
       setPosts(res.data);
     };
     fetchPosts();
-  }, [username, id]);
+  }, [username, id, posts]);
 
   return (
     <div className="feedContainer">
