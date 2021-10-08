@@ -20,7 +20,6 @@ const Share = () => {
     };
 
     if (file) {
-      // console.log("from share: "+ await uploadImage(file));
       // Create the file metadata
       /** @type {any} */
       const metadata = {
@@ -88,7 +87,6 @@ const Share = () => {
     setFile(null);
   };
 
-
   return (
     <div className="shareContainer">
       <div className="shareWrapper">
@@ -109,6 +107,15 @@ const Share = () => {
             ref={desc}
           />
         </div>
+        {file ? (
+          <img
+            className="uploadedImage"
+            src={URL.createObjectURL(file)}
+            alt=""
+          />
+        ) : (
+          ""
+        )}
         <hr className="shareHr" />
         <form className="shareBottom" onSubmit={submitHandler}>
           <div className="shareOptions">
