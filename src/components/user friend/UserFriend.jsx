@@ -5,8 +5,8 @@ const UserFriend = ({ user }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <div>
-      <div className="rightbarFollowing">
         <Link
+          className="rightbarFollowing"
           to={"/profile/" + user.username}
           style={{ textDecoration: "none" }}
         >
@@ -21,7 +21,6 @@ const UserFriend = ({ user }) => {
           />
           <span className="rightbarFollowingName">{user.username}</span>
         </Link>
-      </div>
     </div>
   );
 };

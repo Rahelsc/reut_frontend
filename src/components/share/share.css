@@ -5,7 +5,6 @@
 
 .shareContainer {
   width: 100%;
-  height: fit-content;
   border-radius: 10px;
   box-shadow: 2px 3px 32px 0px rgba(93, 74, 74, 0.6);
   -webkit-box-shadow: 2px 3px 32px 0px rgba(93, 74, 74, 0.6);
