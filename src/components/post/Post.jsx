@@ -24,13 +24,17 @@ const Post = ({ post }) => {
     };
     fetchUser();
   }, [post.userId]);
-  const likeHandler = () => {
+
+  const likeHandler = async () => {
     try {
-      axios.put("/posts/" + post._id + "/like", { userId: currentUser._id });
+      await axios.put("/posts/" + post._id + "/like", {
+        userId: currentUser._id,
+      });
+      await setLike(isliked ? like - 1 : like + 1);
+      setIsliked(!isliked);
     } catch (error) {}
-    setLike(isliked ? like - 1 : like + 1);
-    setIsliked(!isliked);
   };
+
   return (
     <div className="postContainer">
       <div className="postWrapper">

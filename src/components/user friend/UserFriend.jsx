@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./UserFriend.css";
 
 const UserFriend = ({ user }) => {
@@ -5,12 +6,21 @@ const UserFriend = ({ user }) => {
   return (
     <div>
       <div className="rightbarFollowing">
-        <img
-          src={PF + user.profilePicture}
-          alt=""
-          className="rightbarFollowingImg"
-        />
-        <span className="rightbarFollowingName">{user.username}</span>
+        <Link
+          to={"/profile/" + user.username}
+          style={{ textDecoration: "none" }}
+        >
+          <img
+            src={
+              user.profilePicture
+                ? PF + user.profilePicture
+                : PF + "/person/man.png"
+            }
+            alt=""
+            className="rightbarFollowingImg"
+          />
+          <span className="rightbarFollowingName">{user.username}</span>
+        </Link>
       </div>
     </div>
   );

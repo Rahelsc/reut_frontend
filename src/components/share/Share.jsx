@@ -114,7 +114,6 @@ const Share = () => {
           />
         </div>
 
-        {/* stopped here !!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
         {file ? (
           <div className="uploadImageContainer">
             <img
