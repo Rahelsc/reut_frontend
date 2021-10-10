@@ -1,0 +1,27 @@
+:root {
+  --purple: #8a2be2;
+  --gray: #eff2f5;
+}
+
+.conversation {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.conversation:hover {
+  background-color: var(--gray);
+}
+
+.conversationImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.conversationName {
+  font-weight: 500;
+}

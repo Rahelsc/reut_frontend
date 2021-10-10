@@ -11,7 +11,7 @@ const Rightbar = ({ user }) => {
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
   const [followed, setFollowed] = useState();
-  
+
   useEffect(() => {
     setFollowed(currentUser.followings.includes(user?._id));
   }, []);
@@ -104,9 +104,10 @@ const Rightbar = ({ user }) => {
         </div>
         <h4 className="rightbarTitle">User friends</h4>
         <div className="rightbarFollowings">
-          {friends.map((friend) => (
-            <UserFriend key={friend._id} user={friend} />
-          ))}
+          {friends &&
+            friends.map((friend) => (
+              <UserFriend key={friend._id} user={friend} />
+            ))}
         </div>
       </>
     );
