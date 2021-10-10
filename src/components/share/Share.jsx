@@ -5,12 +5,14 @@ import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
+import { Chip, CircularProgress } from "@material-ui/core";
 
 const Share = () => {
   const { user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef(user.desc);
   const [file, setFile] = useState(null);
+  const [imageUpload, setImageUpload] = useState(null);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -37,6 +39,7 @@ const Share = () => {
           // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setImageUpload(progress);
           console.log("Upload is " + progress + "% done");
           switch (snapshot.state) {
             case "paused":
@@ -74,6 +77,9 @@ const Share = () => {
             console.log("File available at", downloadURL);
             newPost = { ...newPost, img: downloadURL };
             await axios.post("/posts", newPost);
+            desc.current.value = "";
+            setFile(null);
+            setImageUpload(null);
           });
         }
       );
@@ -82,9 +88,9 @@ const Share = () => {
     if (!file) {
       try {
         await axios.post("/posts", newPost);
+        desc.current.value = "";
       } catch (error) {}
     }
-    setFile(null);
   };
 
   return (
@@ -107,12 +113,22 @@ const Share = () => {
             ref={desc}
           />
         </div>
+
+        {/* stopped here !!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
         {file ? (
-          <img
-            className="uploadedImage"
-            src={URL.createObjectURL(file)}
-            alt=""
-          />
+          <div className="uploadImageContainer">
+            <img
+              className="uploadedImage"
+              src={URL.createObjectURL(file)}
+              alt=""
+            />
+            <Chip
+              className="uploadedImageDeleteChip"
+              label="remove"
+              variant="outlined"
+              onDelete={() => setFile(null)}
+            />
+          </div>
         ) : (
           ""
         )}
@@ -143,9 +159,13 @@ const Share = () => {
               <span className="shareOptionText">Feelings</span>
             </div>
           </div>
-          <button type="submit" className="shareButton">
-            Share
-          </button>
+          {imageUpload ? (
+            <CircularProgress variant="determinate" value={imageUpload} />
+          ) : (
+            <button type="submit" className="shareButton">
+              Share
+            </button>
+          )}
         </form>
       </div>
     </div>
