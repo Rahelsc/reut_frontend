@@ -16,6 +16,7 @@ const Messenger = () => {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [msgFromFriend, setMsgFromFriend] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   // connect to websocket
   const socket = useRef();
 
@@ -43,11 +44,12 @@ const Messenger = () => {
     socket.current.emit("addUser", user._id);
     // get user from server
     socket.current.on("getUsers", (users) => {
-      console.log("from socket: ", users);
+      setOnlineUsers(
+        user.followings.filter((f) => users.some((u) => u.userId === f))
+      );
     });
   }, [user]);
 
-  console.log(socket);
 
   useEffect(() => {
     const getConversations = async () => {
@@ -154,7 +156,11 @@ const Messenger = () => {
         </div>
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
-            <ChatOnline />
+            <ChatOnline
+              onlineUsers={onlineUsers}
+              currentUserId={user._id}
+              setCurrentChat={setCurrentChat}
+            />
           </div>
         </div>
       </div>
