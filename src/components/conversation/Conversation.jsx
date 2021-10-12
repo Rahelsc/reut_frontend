@@ -1,14 +1,37 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import "./conversation.css";
 
-const Conversation = () => {
+const Conversation = ({ conv, currentUser }) => {
+  const [user, setUser] = useState(null);
+  const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
+  useEffect(() => {
+    const friendId = conv.members.find((mem) => mem !== currentUser._id);
+
+    const getUser = async () => {
+      try {
+        const res = await axios.get("/users?userId=" + friendId);
+        setUser(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, [currentUser, conv]);
+
   return (
     <div className="conversation">
-      <img
-        src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwildfor.life%2Fsites%2Fdefault%2Ffiles%2Fspecies%2Fhero%2Ftiger_hero.jpg&f=1&nofb=1"
-        alt=""
-        className="conversationImg"
-      />
-      <span className="conversationName">Name</span>
+      {user && (
+        <>
+          <img
+            src={user?.profilePicture || PF + "/person/man.png"}
+            alt=""
+            className="conversationImg"
+          />
+          <span className="conversationName">{user?.username}</span>{" "}
+        </>
+      )}
     </div>
   );
 };

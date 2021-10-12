@@ -19,8 +19,8 @@ const Rightbar = ({ user }) => {
   useEffect(() => {
     const getFriends = async () => {
       try {
-        const friendList = await axios.get("/users/friends/" + user._id);
-        setFriends(friendList.data);
+        const friendList = await axios.get("/users/friends/" + user?._id);
+        setFriends(friendList?.data);
         console.log("get friends: ", friendList);
       } catch (error) {
         console.log(error);

@@ -1,12 +1,8 @@
-import { useEffect } from "react";
 import "./online.css";
 
 const Online = ({ user }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
-  useEffect(() => {
-    console.log("from online: ", user);
-  }, [])
 
   return (
     <div>
