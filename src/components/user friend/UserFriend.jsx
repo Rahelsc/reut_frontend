@@ -13,7 +13,7 @@ const UserFriend = ({ user }) => {
           <img
             src={
               user.profilePicture
-                ? PF + user.profilePicture
+                ? user.profilePicture
                 : PF + "/person/man.png"
             }
             alt=""

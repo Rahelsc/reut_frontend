@@ -1,25 +1,32 @@
 import "./rightbar.css";
-import { Users } from "../../dummyData";
-import Online from "../online/Online";
 import UserFriend from "../user friend/UserFriend";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
+import { SocketContext } from "../../socketContext/SocketContext";
+import ChatOnline from "../chatOnline/ChatOnline";
+import { useRef } from "react";
+import { io } from "socket.io-client";
 
 const Rightbar = ({ user }) => {
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
   const [followed, setFollowed] = useState();
+  const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
+    useContext(SocketContext);
+  const socket = useRef();
+
+  useEffect(() => (socket.current = io("ws://localhost:8900")), []);
 
   useEffect(() => {
     setFollowed(currentUser.followings.includes(user?._id));
-  }, []);
+  }, [currentUser, user]);
 
   useEffect(() => {
     const getFriends = async () => {
       try {
-        const friendList = await axios.get("/users/friends/" + user?._id);
+        const friendList = await axios.get("/users/friends/" + currentUser._id);
         setFriends(friendList?.data);
         console.log("get friends: ", friendList);
       } catch (error) {
@@ -27,7 +34,7 @@ const Rightbar = ({ user }) => {
       }
     };
     getFriends();
-  }, [currentUser.followings, user]);
+  }, [currentUser.followings, user, currentUser._id]);
 
   const handleClickFriend = async () => {
     console.log(followed);
@@ -49,6 +56,18 @@ const Rightbar = ({ user }) => {
     setFollowed(!followed);
   };
 
+  // send to server user .emit, to get from server .on
+  useEffect(() => {
+    // send current user details to socket server
+    socket.current.emit("addUser", currentUser._id);
+    // get user from server
+    socket.current.on("getUsers", (users) => {
+      setCurrentlyOnlineFriends(
+        currentUser.followings.filter((f) => users.some((u) => u.userId === f))
+      );
+    });
+  }, [ setCurrentlyOnlineFriends, currentUser]);
+
   const HomeRightBar = () => {
     return (
       <>
@@ -62,9 +81,10 @@ const Rightbar = ({ user }) => {
         <img className="rightbarAd" src="/assets/ad.png" alt="" />
         <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendsList">
-          {Users.map((friend) => (
-            <Online key={friend._id} user={friend} />
-          ))}
+          <ChatOnline
+            onlineUsers={currentlyOnlineFriends}
+            currentUserId={currentUser._id}
+          />
         </ul>
       </>
     );

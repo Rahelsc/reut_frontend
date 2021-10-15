@@ -7,6 +7,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { SocketContext } from "../../socketContext/SocketContext";
 
 const Messenger = () => {
   const [conversations, setConversations] = useState([]);
@@ -17,6 +18,8 @@ const Messenger = () => {
   const scrollRef = useRef();
   const [msgFromFriend, setMsgFromFriend] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
+    useContext(SocketContext);
   // connect to websocket
   const socket = useRef();
 
@@ -44,11 +47,11 @@ const Messenger = () => {
     socket.current.emit("addUser", user._id);
     // get user from server
     socket.current.on("getUsers", (users) => {
-      setOnlineUsers(
+      setCurrentlyOnlineFriends(
         user.followings.filter((f) => users.some((u) => u.userId === f))
       );
     });
-  }, [user]);
+  }, [user, setCurrentlyOnlineFriends]);
 
 
   useEffect(() => {
@@ -157,7 +160,7 @@ const Messenger = () => {
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
             <ChatOnline
-              onlineUsers={onlineUsers}
+              onlineUsers={currentlyOnlineFriends}
               currentUserId={user._id}
               setCurrentChat={setCurrentChat}
             />

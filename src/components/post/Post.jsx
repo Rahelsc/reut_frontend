@@ -10,6 +10,7 @@ const Post = ({ post }) => {
   const [like, setLike] = useState(post.likes.length);
   const [isliked, setIsliked] = useState(false);
   const [user, setUser] = useState({});
+  
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const { user: currentUser } = useContext(AuthContext);
 
@@ -45,7 +46,7 @@ const Post = ({ post }) => {
                 className="postProfileImg"
                 src={
                   user.profilePicture
-                    ? PF + user.profilePicture
+                    ? user.profilePicture
                     : PF + "person/man.png"
                 }
                 alt=""
@@ -61,7 +62,12 @@ const Post = ({ post }) => {
         </div>
         <div className="postCenter">
           <span className="postText">{post?.desc}</span>
-          <img className="postImg" src={post?.img} alt="" />
+          <img
+            className="postImg"
+            // local folder for testing, to render pics from public folder and not have a broken link
+            src={post?.img? post.img.startsWith("post") ? PF + post.img : post.img : ""}
+            alt=""
+          />
         </div>
         <div className="postBottom">
           <div className="postBottomLeft">
