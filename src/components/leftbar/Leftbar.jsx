@@ -14,6 +14,7 @@ import {
 import Friend from "../friend/Friend";
 import "./leftbar.css";
 import { Users } from "../../dummyData";
+import { Link } from "react-router-dom";
 
 
 const Leftbar = () => {
@@ -26,8 +27,10 @@ const Leftbar = () => {
             <span className="leftbarListItemText">Feed</span>
           </li>
           <li className="leftbarListItem">
-            <Chat className="sidebarIcon" />
-            <span className="leftbarListItemText">Chat</span>
+            <Link to="/messenger" style={{ textDecoration: "none", color: "black" }}>
+              <Chat className="sidebarIcon" />
+              <span className="leftbarListItemText">Chat</span>
+            </Link>
           </li>
           <li className="leftbarListItem">
             <Help className="sidebarIcon" />

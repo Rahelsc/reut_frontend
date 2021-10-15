@@ -1,16 +1,12 @@
-import {
-  Chat,
-  Notifications,
-  Person,
-  Search,
-} from "@material-ui/icons";
+import { Chat, Notifications, Person, Search } from "@material-ui/icons";
 import "./topbar.css";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { logout } from "../../authFunctions";
 
 const Topbar = () => {
-  const { user } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   return (
     <div className="topbarContainer">
@@ -58,6 +54,13 @@ const Topbar = () => {
             className="topbarImg"
           />
         </Link>
+
+          <span
+            className="topbarLink"
+            onClick={() => logout(dispatch)}
+          >
+            Logout
+          </span>
       </div>
     </div>
   );

@@ -1,19 +1,27 @@
 import "./share.css";
-import { PermMedia, Label, Room, EmojiEmotions, Cancel } from "@material-ui/icons";
+import {
+  PermMedia,
+  Label,
+  Room,
+  EmojiEmotions,
+} from "@material-ui/icons";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
 import { Chip, CircularProgress } from "@material-ui/core";
+import { FeedContext } from "../../feedContext/FeedContext";
 
 const Share = () => {
   const { user } = useContext(AuthContext);
+  // each time we submit a post the postRefresh is set. causing the rerendering of the feed component (by use of context)
+  const { setPostBeforeRefresh } = useContext(FeedContext);
+
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef(user.desc);
   const [file, setFile] = useState(null);
   const [imageUpload, setImageUpload] = useState(null);
-  
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -92,6 +100,8 @@ const Share = () => {
         desc.current.value = "";
       } catch (error) {}
     }
+
+    setPostBeforeRefresh("");
   };
 
   return (

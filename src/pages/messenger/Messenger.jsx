@@ -29,7 +29,7 @@ const Messenger = () => {
         conversationId: currentChat?._id,
       });
     });
-  }, []);
+  }, [currentChat]);
 
   useEffect(() => {
     msgFromFriend &&
