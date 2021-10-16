@@ -14,12 +14,10 @@ const Feed = ({ username }) => {
 
   // take the id from the user before the useEffect and so we can use it in the useEffect
   // otherwise at starting point the value is undefined and the get requests return with error
-  const id = user._id;
+  const id = user?._id;
 
   useEffect(() => {
     const fetchPosts = async () => {
-      console.log("in fetch", postBeforeRefresh);
-
       const res = username
         ? await axios.get("/posts/profile/" + username)
         : await axios.get("posts/timeline/" + id);
@@ -35,7 +33,7 @@ const Feed = ({ username }) => {
   return (
     <div className="feedContainer">
       <div className="feedWrapper">
-        {(!username || username === user.username) && <Share />}
+        {(!username || username === user?.username) && <Share />}
         {posts.map((p) => (
           <Post key={p._id} post={p} />
         ))}

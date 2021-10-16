@@ -43,24 +43,28 @@ const Topbar = () => {
             <span className="topbarIconBadge">3</span>
           </div>
         </div>
-        <Link to={`/profile/${user.username}`}>
-          <img
-            src={
-              user.profilePicture
-                ? PF + user.profilePicture
-                : PF + "person/man.png"
-            }
-            alt=""
-            className="topbarImg"
-          />
-        </Link>
-
-          <span
-            className="topbarLink"
-            onClick={() => logout(dispatch)}
-          >
+        {user ? (
+          <Link to={`/profile/${user.username}`}>
+            <img
+              src={
+                user.profilePicture
+                  ? PF + user.profilePicture
+                  : PF + "person/man.png"
+              }
+              alt=""
+              className="topbarImg"
+            />
+          </Link>
+        ) : (
+          ""
+        )}
+        {user ? (
+          <span className="topbarLink" onClick={() => logout(dispatch)}>
             Logout
           </span>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

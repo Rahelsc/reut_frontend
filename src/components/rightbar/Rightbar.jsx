@@ -19,54 +19,64 @@ const Rightbar = ({ user }) => {
 
   useEffect(() => (socket.current = io("ws://localhost:8900")), []);
 
+  // followed is being updated based on the user you're currently viewing
   useEffect(() => {
-    setFollowed(currentUser.followings.includes(user?._id));
-  }, [currentUser, user]);
+    console.log("user: ", user);
+    setFollowed(currentUser?.followings.includes(user?._id));
+    console.log("user?._id: ", user?._id, ": ", currentUser?.followings);
+    console.log(
+      "currentUser.followings.includes(user?._id): ",
+      currentUser?.followings.includes(user?._id)
+    );
+  }, [user]);
 
   useEffect(() => {
     const getFriends = async () => {
       try {
-        const friendList = await axios.get("/users/friends/" + currentUser._id);
+        const friendList = await axios.get(
+          "/users/friends/" + currentUser?._id
+        );
         setFriends(friendList?.data);
-        console.log("get friends: ", friendList);
       } catch (error) {
         console.log(error);
       }
     };
-    getFriends();
-  }, [currentUser.followings, user, currentUser._id]);
+    // only if there is a user logged in, get friends
+    currentUser && getFriends();
+  }, [currentUser, user]);
 
   const handleClickFriend = async () => {
-    console.log(followed);
+    console.log("followed: ", followed);
     try {
       if (followed) {
         await axios.put("/users/" + user._id + "/unfollow", {
-          userId: currentUser._id,
+          userId: currentUser?._id,
         });
         dispatch({ type: "UNFOLLOW", payload: user._id });
       } else {
         await axios.put("/users/" + user._id + "/follow", {
-          userId: currentUser._id,
+          userId: currentUser?._id,
         });
-        dispatch({ type: "FOLLOW", payload: user._id });
+        dispatch({ type: "FOLLOW", payload: user?._id });
       }
     } catch (error) {
       console.log(error);
     }
-    setFollowed(!followed);
+
+    setFollowed((prev) => !prev);
   };
 
   // send to server user .emit, to get from server .on
   useEffect(() => {
     // send current user details to socket server
-    socket.current.emit("addUser", currentUser._id);
+    socket.current.emit("addUser", currentUser?._id);
     // get user from server
     socket.current.on("getUsers", (users) => {
       setCurrentlyOnlineFriends(
-        currentUser.followings.filter((f) => users.some((u) => u.userId === f))
+        currentUser?.followings.filter((f) => users.some((u) => u.userId === f))
       );
     });
-  }, [ setCurrentlyOnlineFriends, currentUser]);
+  }, [setCurrentlyOnlineFriends, currentUser]);
 
   const HomeRightBar = () => {
     return (
@@ -83,7 +93,7 @@ const Rightbar = ({ user }) => {
         <ul className="rightbarFriendsList">
           <ChatOnline
             onlineUsers={currentlyOnlineFriends}
-            currentUserId={currentUser._id}
+            currentUserId={currentUser?._id}
           />
         </ul>
       </>
@@ -99,7 +109,7 @@ const Rightbar = ({ user }) => {
   const ProfileRightBar = () => {
     return (
       <>
-        {user.username !== currentUser.username && (
+        {user.username !== currentUser?.username && (
           <button className="rightbarFollowButton" onClick={handleClickFriend}>
             {followed ? "Unfollow" : "Follow"}
             {followed ? <Remove /> : <Add />}
@@ -124,10 +134,15 @@ const Rightbar = ({ user }) => {
         </div>
         <h4 className="rightbarTitle">User friends</h4>
         <div className="rightbarFollowings">
-          {friends &&
-            friends.map((friend) => (
-              <UserFriend key={friend._id} user={friend} />
-            ))}
+          {currentUser?._id !== user._id && user?.followings
+            ? user.followings.map((friend) => (
+                <UserFriend key={friend._id} user={friend} />
+              ))
+            : currentUser
+            ? friends.map((friend) => (
+                <UserFriend key={friend._id} user={friend} />
+              ))
+            : ""}
         </div>
       </>
     );

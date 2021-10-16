@@ -15,8 +15,8 @@ const Post = ({ post }) => {
   const { user: currentUser } = useContext(AuthContext);
 
   useEffect(() => {
-    setIsliked(post.likes.includes(currentUser._id));
-  }, [post.likes, currentUser._id]);
+    setIsliked(post.likes.includes(currentUser?._id));
+  }, [post.likes, currentUser?._id]);
 
   useEffect(() => {
     const fetchUser = async () => {

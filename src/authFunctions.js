@@ -15,3 +15,11 @@ export const logout = (dispatch) => {
   dispatch({ type: "LOGOUT" });
   localStorage.removeItem("jwtToken");
 };
+
+export const refreshToken = async ()=>{
+  try {
+    // "/auth/refresh"
+  } catch (error) {
+    console.log(error);
+  }
+}

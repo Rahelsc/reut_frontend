@@ -3,14 +3,18 @@ import Feed from "../../components/feed/Feed.jsx";
 import Leftbar from "../../components/leftbar/Leftbar.jsx";
 import Rightbar from "../../components/rightbar/Rightbar.jsx";
 import Topbar from "../../components/topbar/Topbar.jsx";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router";
+import { Chip } from "@material-ui/core";
+import { AuthContext } from "../../context/AuthContext";
+import { logout } from "../../authFunctions";
 
 const Profile = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [user, setUser] = useState({});
   const username = useParams().username;
+  const { user: currentUser, dispatch } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,6 +23,17 @@ const Profile = () => {
     };
     fetchUser();
   }, [username]);
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/users/${currentUser._id}`, {
+        headers: { authorization: "Bearer " + localStorage.getItem("jwtToken") },
+      });
+      logout(dispatch);
+    } catch (error) {
+      
+    }
+  };
 
   return (
     <>
@@ -38,6 +53,15 @@ const Profile = () => {
                 src={user.profilePicture || PF + "/person/man.png"}
                 alt=""
               />
+              {currentUser && currentUser._id === user._id ? (
+                <Chip
+                  label="Delete Profile"
+                  className="deleteButton"
+                  onDelete={handleDelete}
+                />
+              ) : (
+                ""
+              )}
             </div>
             <div className="profileInfo">
               <h4 className="profileInfoName">{user.username}</h4>
