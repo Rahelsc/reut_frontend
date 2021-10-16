@@ -17,6 +17,8 @@ if (localStorage.getItem("jwtToken")) {
   if (decodedToken.exp * 1000 < Date.now()) {
     // removing from local storage if not valid token
     localStorage.removeItem("jwtToken");
+    localStorage.removeItem("jwtRefreshToken");
+
   } else INITIAL_STATE = { ...INITIAL_STATE, user: decodedToken.user };
 }
 

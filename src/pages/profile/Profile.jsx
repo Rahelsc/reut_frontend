@@ -8,7 +8,7 @@ import axios from "axios";
 import { useParams } from "react-router";
 import { Chip } from "@material-ui/core";
 import { AuthContext } from "../../context/AuthContext";
-import { logout } from "../../authFunctions";
+import { axiosJWT, logout } from "../../authFunctions";
 
 const Profile = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
@@ -26,7 +26,7 @@ const Profile = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/users/${currentUser._id}`, {
+      await axiosJWT.delete(`/users/${currentUser._id}`, {
         headers: { authorization: "Bearer " + localStorage.getItem("jwtToken") },
       });
       logout(dispatch);

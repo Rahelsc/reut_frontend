@@ -47,7 +47,7 @@ const Login = () => {
             />
             <button className="loginButon" type="submit" disabled={isFetching}>
               {isFetching ? (
-                <CircularProgress color="white" size="20px" />
+                <CircularProgress color="inherit" size="20px" />
               ) : (
                 "Log In"
               )}
