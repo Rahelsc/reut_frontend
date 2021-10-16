@@ -12,23 +12,14 @@ import { io } from "socket.io-client";
 const Rightbar = ({ user }) => {
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
-  const [followed, setFollowed] = useState();
+  const [followed, setFollowed] = useState(
+    currentUser?.followings.includes(user?._id)
+  );
   const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
     useContext(SocketContext);
   const socket = useRef();
 
   useEffect(() => (socket.current = io("ws://localhost:8900")), []);
-
-  // followed is being updated based on the user you're currently viewing
-  useEffect(() => {
-    console.log("user: ", user);
-    setFollowed(currentUser?.followings.includes(user?._id));
-    console.log("user?._id: ", user?._id, ": ", currentUser?.followings);
-    console.log(
-      "currentUser.followings.includes(user?._id): ",
-      currentUser?.followings.includes(user?._id)
-    );
-  }, [user]);
 
   useEffect(() => {
     const getFriends = async () => {
@@ -57,7 +48,7 @@ const Rightbar = ({ user }) => {
         await axios.put("/users/" + user._id + "/follow", {
           userId: currentUser?._id,
         });
-        dispatch({ type: "FOLLOW", payload: user?._id });
+        dispatch({ type: "FOLLOW", payload: user._id });
       }
     } catch (error) {
       console.log(error);
