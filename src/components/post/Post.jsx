@@ -5,12 +5,17 @@ import axios from "axios";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { IconButton } from "@material-ui/core";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { axiosJWT } from "../../authFunctions";
+import { FeedContext } from "../../feedContext/FeedContext";
 
 const Post = ({ post }) => {
   const [like, setLike] = useState(post.likes.length);
   const [isliked, setIsliked] = useState(false);
   const [user, setUser] = useState({});
-  
+  const {setPostBeforeRefresh} = useContext(FeedContext)
+
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const { user: currentUser } = useContext(AuthContext);
 
@@ -34,6 +39,22 @@ const Post = ({ post }) => {
       setLike(isliked ? like - 1 : like + 1);
       setIsliked(!isliked);
     } catch (error) {}
+  };
+
+  const deletePost = async (postId) => {
+    try {
+      await axiosJWT.delete(
+        `/posts?postId=${postId}`,
+        {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        }
+      );
+      setPostBeforeRefresh("");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -65,7 +86,13 @@ const Post = ({ post }) => {
           <img
             className="postImg"
             // local folder for testing, to render pics from public folder and not have a broken link
-            src={post?.img? post.img.startsWith("post") ? PF + post.img : post.img : ""}
+            src={
+              post?.img
+                ? post.img.startsWith("post")
+                  ? PF + post.img
+                  : post.img
+                : ""
+            }
             alt=""
           />
         </div>
@@ -85,8 +112,19 @@ const Post = ({ post }) => {
             />
             <span className="postLikeCounter">{like} people like it</span>
           </div>
+
           <div className="postBottomRight">
             <span className="postCommentText">{post.comment} comments</span>
+            {currentUser && currentUser._id === post.userId ? (
+              <IconButton
+                aria-label="delete"
+                onClick={() => deletePost(post._id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

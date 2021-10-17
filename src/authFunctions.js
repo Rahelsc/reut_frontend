@@ -13,28 +13,45 @@ export const loginCall = async (userCredentials, dispatch) => {
   }
 };
 
-export const logout = (dispatch) => {
-  dispatch({ type: "LOGOUT" });
-  localStorage.removeItem("jwtToken");
-  localStorage.removeItem("jwtRefreshToken");
+export const logout = async (dispatch) => {
+  try {
+    const res = await axios.post(
+      "/auth/logout",
+      {
+        token: localStorage.getItem("jwtRefreshToken"),
+      },
+      {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      }
+    );
+    dispatch({ type: "LOGOUT" });
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("jwtRefreshToken");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-// an instance to call if we wish to refresh the token 
+// an instance to call if we wish to refresh the token
 // so that the user won't have to manually do it each time
 // only by calling this instance will the refresh occur
-export const axiosJWT = axios.create()
+export const axiosJWT = axios.create();
 
 // runs before each request from axiosJWT
 axiosJWT.interceptors.request.use(
   async (config) => {
+
     const decodedToken = jwtDecode(localStorage.getItem("jwtToken"));
+
     if (decodedToken.exp * 1000 < Date.now()) {
       await refreshToken();
       // update my authorization header
       config.headers["authorization"] =
         "Bearer " + localStorage.getItem("jwtToken");
-      return config;
     }
+    return config;
   },
   (error) => Promise.reject(error)
 );

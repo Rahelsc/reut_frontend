@@ -6,7 +6,6 @@ import { FeedContextPovider } from "../../feedContext/FeedContext.js";
 import "./home.css";
 
 const Home = () => {
-  console.log("from home");
   return (
     <>
       <Topbar />

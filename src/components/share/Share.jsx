@@ -81,6 +81,7 @@ const Share = () => {
             console.log("File available at", downloadURL);
             newPost = { ...newPost, img: downloadURL };
             await axios.post("/posts", newPost);
+            setPostBeforeRefresh(newPost);
             desc.current.value = "";
             setFile(null);
             setImageUpload(null);
@@ -92,11 +93,11 @@ const Share = () => {
     if (!file) {
       try {
         await axios.post("/posts", newPost);
+        setPostBeforeRefresh(newPost);
         desc.current.value = "";
       } catch (error) {}
     }
 
-    setPostBeforeRefresh("");
   };
 
   return (

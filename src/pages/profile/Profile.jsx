@@ -27,11 +27,13 @@ const Profile = () => {
   const handleDelete = async () => {
     try {
       await axiosJWT.delete(`/users/${currentUser._id}`, {
-        headers: { authorization: "Bearer " + localStorage.getItem("jwtToken") },
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
       });
       logout(dispatch);
     } catch (error) {
-      
+      console.log("handle delete: ", error);
     }
   };
 
