@@ -85,3 +85,30 @@
   border-bottom: 1px dashed gray;
   font-size: 15px;
 }
+
+.postComment {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.commentInput {
+  display: block;
+  border: none;
+  width: 200px;
+}
+
+.commentInput:focus {
+  outline: none;
+}
+
+.commentButton {
+  border: none;
+  padding: 7px;
+  border-radius: 5px;
+  background-color: var(--purple);
+  font-weight: 500;
+  color: var(--gray);
+  cursor: pointer;
+  margin-left: 30px;
+}

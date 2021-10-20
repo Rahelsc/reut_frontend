@@ -1,0 +1,35 @@
+:root {
+  --purple: #8a2be2;
+  --gray: #eff2f5;
+}
+
+.comment {
+  position: relative;
+  font-family: sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  width: 200px;
+  background-color: var(--gray);
+  border-radius: 10px;
+  padding: 10px;
+  color: #000;
+  margin: 0 auto 25px auto;
+}
+
+.commentBottomLeft:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 24px solid var(--gray);
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid var(--gray);
+  border-top: 20px solid transparent;
+  left: 5px;
+  top: -24px;
+}
+
+.userNameComment{
+    color: var(--purple);
+    font-family: fantasy;
+}
