@@ -1,4 +1,4 @@
-import { Chat, Notifications, Person, Search } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 import "./topbar.css";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
@@ -27,21 +27,6 @@ const Topbar = () => {
       <div className="topbarRight">
         <div className="topbarLinks">
           <span className="topbarLink">Hompepage</span>
-          <span className="topbarLink">Timeline</span>
-        </div>
-        <div className="topbarIcons">
-          <div className="topbarIconItem">
-            <Person fontSize="medium" />
-            <span className="topbarIconBadge">1</span>
-          </div>
-          <div className="topbarIconItem">
-            <Chat fontSize="medium" />
-            <span className="topbarIconBadge">2</span>
-          </div>
-          <div className="topbarIconItem">
-            <Notifications fontSize="medium" />
-            <span className="topbarIconBadge">3</span>
-          </div>
         </div>
         {user ? (
           <Link to={`/profile/${user.username}`}>

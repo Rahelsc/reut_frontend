@@ -1,5 +1,5 @@
 import "./share.css";
-import { PermMedia, Label, Room, EmojiEmotions } from "@material-ui/icons";
+import { PermMedia } from "@material-ui/icons";
 import { useContext, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
@@ -152,18 +152,7 @@ const Share = () => {
                 style={{ display: "none" }}
               />
             </label>
-            <div className="shareOption">
-              <Label htmlColor="blue" className="shareIcon" />
-              <span className="shareOptionText">Tag</span>
-            </div>
-            <div className="shareOption">
-              <Room htmlColor="green" className="shareIcon" />
-              <span className="shareOptionText">Location</span>
-            </div>
-            <div className="shareOption">
-              <EmojiEmotions htmlColor="gold" className="shareIcon" />
-              <span className="shareOptionText">Feelings</span>
-            </div>
+            
           </div>
           {imageUpload ? (
             <CircularProgress variant="determinate" value={imageUpload} />

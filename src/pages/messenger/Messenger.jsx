@@ -17,7 +17,6 @@ const Messenger = () => {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [msgFromFriend, setMsgFromFriend] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
   const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
     useContext(SocketContext);
   // connect to websocket

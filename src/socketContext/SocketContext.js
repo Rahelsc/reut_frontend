@@ -6,7 +6,7 @@ export const SocketContext = createContext({
 });
 
 export const SocketContextPovider = ({ children }) => {
-  const [currentlyOnlineFriends, setCurrentlyOnlineFriends] = useState([])
+  const [currentlyOnlineFriends, setCurrentlyOnlineFriends] = useState([]);
   return (
     <SocketContext.Provider
       value={{
