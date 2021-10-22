@@ -7,6 +7,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
 import { Chip, CircularProgress } from "@material-ui/core";
 import { FeedContext } from "../../feedContext/FeedContext";
+import jwtDecode from "jwt-decode";
 
 const Share = () => {
   const { user } = useContext(AuthContext);
@@ -26,6 +27,45 @@ const Share = () => {
     };
 
     if (file) {
+      console.log(file);
+
+      const API_ENDPOINT = "http://127.0.0.1:5000";
+
+      var myHeaders = new Headers();
+      myHeaders.append("Accept", "application/json");
+
+      var formdata = new FormData();
+      formdata.append("file", file, file.filename);
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+      };
+
+      fetch(API_ENDPOINT + "/picupload", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+
+      // request.open("POST", API_ENDPOINT + "/picupload", true);
+      // request.onreadystatechange = () => {
+      //   if (request.readyState === 4) {
+      //     console.log("hiii: ", request.responseText);
+      //     newPost = { ...newPost, img: "http://localhost:5000/" };
+      //     const postToMogo = async () => await axios.post("/posts", newPost);
+      //     postToMogo();
+      //     setPostBeforeRefresh(newPost);
+      //     desc.current.value = "";
+      //     setFile(null);
+      //     setImageUpload(null);
+      //   }
+      // };
+      // formData.append("file", file);
+      // // request.onload = ()=>console.log("heloo there?");
+
+      // request.send(formData);
+
       // Create the file metadata
       /** @type {any} */
       const metadata = {
@@ -97,7 +137,6 @@ const Share = () => {
         desc.current.value = "";
       } catch (error) {}
     }
-
   };
 
   return (
@@ -152,7 +191,6 @@ const Share = () => {
                 style={{ display: "none" }}
               />
             </label>
-            
           </div>
           {imageUpload ? (
             <CircularProgress variant="determinate" value={imageUpload} />

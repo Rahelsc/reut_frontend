@@ -17,6 +17,7 @@ const Post = ({ post }) => {
   const [user, setUser] = useState({});
   const { setPostBeforeRefresh } = useContext(FeedContext);
   const [comments, setComments] = useState([]);
+  const [showComments, setShowComments] = useState(false);
 
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const { user: currentUser } = useContext(AuthContext);
@@ -139,7 +140,12 @@ const Post = ({ post }) => {
             </div>
 
             <div className="postBottomRight">
-              <span className="postCommentText">{post.comment} comments</span>
+              <span
+                className="postCommentText"
+                onClick={() => setShowComments((prev) => !prev)}
+              >
+                {post.comment} comments
+              </span>
               {currentUser && currentUser._id === post.userId ? (
                 <IconButton
                   aria-label="delete"
@@ -156,7 +162,7 @@ const Post = ({ post }) => {
         <div className="postComment">
           <form className="shareBottom" onSubmit={submitHandler}>
             <input
-              placeholder={`${user.username} your thoughts on this post?`}
+              placeholder={`${currentUser.username} your thoughts on this post?`}
               className="commentInput"
               type="text"
               ref={content}
@@ -167,9 +173,10 @@ const Post = ({ post }) => {
           </form>
         </div>
       </div>
-      {comments.map((comment) => (
-        <Comment key={comment._id} comment={comment} />
-      ))}
+      {showComments &&
+        comments.map((comment) => (
+          <Comment key={comment._id} comment={comment} />
+        ))}
     </>
   );
 };
