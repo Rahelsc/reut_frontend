@@ -7,7 +7,6 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase";
 import { Chip, CircularProgress } from "@material-ui/core";
 import { FeedContext } from "../../feedContext/FeedContext";
-import jwtDecode from "jwt-decode";
 
 const Share = () => {
   const { user } = useContext(AuthContext);
@@ -27,26 +26,32 @@ const Share = () => {
     };
 
     if (file) {
-      console.log(file);
+      const tryAndFindFaces = async () => {
+        const API_ENDPOINT = "http://127.0.0.1:5000";
 
-      const API_ENDPOINT = "http://127.0.0.1:5000";
+        var myHeaders = new Headers();
+        myHeaders.append("Accept", "application/json");
 
-      var myHeaders = new Headers();
-      myHeaders.append("Accept", "application/json");
+        var formdata = new FormData();
+        formdata.append("file", file, file.filename);
 
-      var formdata = new FormData();
-      formdata.append("file", file, file.filename);
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: formdata,
+        };
 
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
+        await fetch(API_ENDPOINT + "/picupload", requestOptions)
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.data === "image cropped successfully")
+              newPost = {
+                ...newPost,
+                img: API_ENDPOINT + `/${file.filename}`,
+              };
+          })
+          .catch((error) => console.log("error", error));
       };
-
-      fetch(API_ENDPOINT + "/picupload", requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
 
       // request.open("POST", API_ENDPOINT + "/picupload", true);
       // request.onreadystatechange = () => {
@@ -75,59 +80,71 @@ const Share = () => {
       // Upload file and metadata to the object 'images/mountains.jpg'
       const storageRef = ref(storage, "images/" + file.name);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+      tryAndFindFaces();
 
-      // Listen for state changes, errors, and completion of the upload.
-      await uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImageUpload(progress);
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-              console.log("unKnown error");
-              break;
+      if (!newPost?.img)
+        // Listen for state changes, errors, and completion of the upload.
+        await uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setImageUpload(progress);
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+              default:
+                console.log("unKnown error");
+                break;
+            }
+          },
+          (error) => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case "storage/unauthorized":
+                console.log(
+                  "User doesn't have permission to access the object"
+                );
+                break;
+              case "storage/canceled":
+                console.log("User canceled the upload");
+                break;
+              case "storage/unknown":
+              default:
+                console.log(
+                  "Unknown error occurred, inspect error.serverResponse"
+                );
+                break;
+            }
+          },
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            getDownloadURL(uploadTask.snapshot.ref).then(
+              async (downloadURL) => {
+                console.log("File available at", downloadURL);
+                newPost = { ...newPost, img: downloadURL };
+                await axios.post("/posts", newPost);
+                setPostBeforeRefresh(newPost);
+                desc.current.value = "";
+                setFile(null);
+                setImageUpload(null);
+              }
+            );
           }
-        },
-        (error) => {
-          // A full list of error codes is available at
-          // https://firebase.google.com/docs/storage/web/handle-errors
-          switch (error.code) {
-            case "storage/unauthorized":
-              console.log("User doesn't have permission to access the object");
-              break;
-            case "storage/canceled":
-              console.log("User canceled the upload");
-              break;
-            case "storage/unknown":
-            default:
-              console.log(
-                "Unknown error occurred, inspect error.serverResponse"
-              );
-              break;
-          }
-        },
-        () => {
-          // Upload completed successfully, now we can get the download URL
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            console.log("File available at", downloadURL);
-            newPost = { ...newPost, img: downloadURL };
-            await axios.post("/posts", newPost);
-            setPostBeforeRefresh(newPost);
-            desc.current.value = "";
-            setFile(null);
-            setImageUpload(null);
-          });
-        }
-      );
+        );
+    } else {
+      await axios.post("/posts", newPost);
+      setPostBeforeRefresh(newPost);
+      desc.current.value = "";
+      setFile(null);
+      setImageUpload(null);
     }
 
     if (!file) {
