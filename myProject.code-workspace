@@ -1,0 +1,17 @@
+{
+  "folders": [
+	{
+		"path": "."
+	},
+	{
+		"path": "../flask-server"
+	},
+	{
+		"path": "../reut_backend"
+	},
+	{
+		"path": "../socket"
+	}
+],
+  "settings": {}
+}

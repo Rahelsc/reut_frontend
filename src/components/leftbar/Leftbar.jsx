@@ -1,7 +1,6 @@
 import { Chat, Help, RssFeed } from "@material-ui/icons";
 import Friend from "../friend/Friend";
 import "./leftbar.css";
-import { Users } from "../../dummyData";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useContext } from "react";

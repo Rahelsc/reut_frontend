@@ -24,16 +24,17 @@ const Share = () => {
       userId: user._id,
       desc: desc.current.value,
     };
+    console.log("b4 file.filename ", file.name);
 
     if (file) {
+      const API_ENDPOINT = "http://127.0.0.1:5000";
       const tryAndFindFaces = async () => {
-        const API_ENDPOINT = "http://127.0.0.1:5000";
 
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
 
         var formdata = new FormData();
-        formdata.append("file", file, file.filename);
+        formdata.append("file", file, file.name);
 
         var requestOptions = {
           method: "POST",
@@ -42,34 +43,29 @@ const Share = () => {
         };
 
         await fetch(API_ENDPOINT + "/picupload", requestOptions)
-          .then((response) => response.json())
+          .then((response) => response.text())
           .then((result) => {
-            if (result.data === "image cropped successfully")
+            console.log("file.filename ", file.name);
+            console.log(
+              'file.name.toLowerCase().split(".", 1)[1]: ',
+              file.name.toLowerCase().split(".")[1]
+            );
+            console.log('result: ', result);
+            if (result !== "no faces") {
+              console.log("file.name: ", file.name);
               newPost = {
                 ...newPost,
-                img: API_ENDPOINT + `/${file.filename}`,
+                img: result,
               };
+              axios.post("/posts", newPost);
+              setPostBeforeRefresh(newPost);
+              desc.current.value = "";
+              setFile(null);
+              setImageUpload(null);
+            }
           })
           .catch((error) => console.log("error", error));
       };
-
-      // request.open("POST", API_ENDPOINT + "/picupload", true);
-      // request.onreadystatechange = () => {
-      //   if (request.readyState === 4) {
-      //     console.log("hiii: ", request.responseText);
-      //     newPost = { ...newPost, img: "http://localhost:5000/" };
-      //     const postToMogo = async () => await axios.post("/posts", newPost);
-      //     postToMogo();
-      //     setPostBeforeRefresh(newPost);
-      //     desc.current.value = "";
-      //     setFile(null);
-      //     setImageUpload(null);
-      //   }
-      // };
-      // formData.append("file", file);
-      // // request.onload = ()=>console.log("heloo there?");
-
-      // request.send(formData);
 
       // Create the file metadata
       /** @type {any} */
@@ -80,9 +76,14 @@ const Share = () => {
       // Upload file and metadata to the object 'images/mountains.jpg'
       const storageRef = ref(storage, "images/" + file.name);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-      tryAndFindFaces();
+      await tryAndFindFaces();
+      
+      console.log("newPost?.img: ", newPost?.img);
+      console.log("!newPost?.img", !newPost?.img);
 
-      if (!newPost?.img)
+
+      if (!newPost?.img) {
+        console.log("happens?");
         // Listen for state changes, errors, and completion of the upload.
         await uploadTask.on(
           "state_changed",
@@ -139,13 +140,15 @@ const Share = () => {
             );
           }
         );
-    } else {
-      await axios.post("/posts", newPost);
-      setPostBeforeRefresh(newPost);
-      desc.current.value = "";
-      setFile(null);
-      setImageUpload(null);
+      }
     }
+    // else {
+    //   await axios.post("/posts", newPost);
+    //   setPostBeforeRefresh(newPost);
+    //   desc.current.value = "";
+    //   setFile(null);
+    //   setImageUpload(null);
+    // }
 
     if (!file) {
       try {
