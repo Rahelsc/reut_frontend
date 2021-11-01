@@ -15,7 +15,7 @@ export const loginCall = async (userCredentials, dispatch) => {
 
 export const logout = async (dispatch) => {
   try {
-    const res = await axios.post(
+    await axios.post(
       "/auth/logout",
       {
         token: localStorage.getItem("jwtRefreshToken"),
@@ -42,7 +42,6 @@ export const axiosJWT = axios.create();
 // runs before each request from axiosJWT
 axiosJWT.interceptors.request.use(
   async (config) => {
-
     const decodedToken = jwtDecode(localStorage.getItem("jwtToken"));
 
     if (decodedToken.exp * 1000 < Date.now()) {

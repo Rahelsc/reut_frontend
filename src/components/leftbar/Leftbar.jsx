@@ -14,7 +14,9 @@ const Leftbar = () => {
         <ul className="leftbarList">
           <li className="leftbarListItem">
             <RssFeed className="sidebarIcon" />
-            <span className="leftbarListItemText">Feed</span>
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <span className="leftbarListItemText">Feed</span>
+            </Link>
           </li>
           <li className="leftbarListItem">
             <Link

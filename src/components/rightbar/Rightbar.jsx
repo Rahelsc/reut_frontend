@@ -23,7 +23,9 @@ const Rightbar = ({ user }) => {
 
   useEffect(() => {
     const getFriends = async () => {
+      let cancel = true;
       try {
+        if (cancel) return;
         const friendList = await axios.get(
           "/users/friends/" + currentUser?._id
         );
@@ -31,6 +33,10 @@ const Rightbar = ({ user }) => {
       } catch (error) {
         console.log(error);
       }
+
+      return () => {
+        cancel = true;
+      };
     };
     // only if there is a user logged in, get friends
     currentUser && getFriends();
@@ -59,14 +65,23 @@ const Rightbar = ({ user }) => {
 
   // send to server user .emit, to get from server .on
   useEffect(() => {
-    // send current user details to socket server
-    socket.current.emit("addUser", currentUser?._id);
-    // get user from server
-    socket.current.on("getUsers", (users) => {
-      setCurrentlyOnlineFriends(
-        currentUser?.followings.filter((f) => users.some((u) => u.userId === f))
-      );
-    });
+    let componentMounted = true;
+    if (componentMounted) {
+      console.log('times');
+      // send current user details to socket server
+      socket.current.emit("addUser", currentUser?._id);
+      // get user from server
+      socket.current.on("getUsers", (users) => {
+        setCurrentlyOnlineFriends(
+          currentUser?.followings.filter((f) =>
+            users.some((u) => u.userId === f)
+          )
+        );
+      });
+    }
+    return () => {
+      componentMounted = false;
+    };
   }, [setCurrentlyOnlineFriends, currentUser]);
 
   const HomeRightBar = () => {

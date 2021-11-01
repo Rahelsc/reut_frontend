@@ -45,14 +45,8 @@ const Share = () => {
         await fetch(API_ENDPOINT + "/picupload", requestOptions)
           .then((response) => response.text())
           .then((result) => {
-            console.log("file.filename ", file.name);
-            console.log(
-              'file.name.toLowerCase().split(".", 1)[1]: ',
-              file.name.toLowerCase().split(".")[1]
-            );
-            console.log('result: ', result);
+            // if there are faces, then take the resulting link flask server returns, put it in the post and upload the post to the database
             if (result !== "no faces") {
-              console.log("file.name: ", file.name);
               newPost = {
                 ...newPost,
                 img: result,
@@ -77,13 +71,10 @@ const Share = () => {
       const storageRef = ref(storage, "images/" + file.name);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
       await tryAndFindFaces();
-      
-      console.log("newPost?.img: ", newPost?.img);
-      console.log("!newPost?.img", !newPost?.img);
 
 
+      // if no faces were detected - upload image from this server to firebase storage
       if (!newPost?.img) {
-        console.log("happens?");
         // Listen for state changes, errors, and completion of the upload.
         await uploadTask.on(
           "state_changed",
@@ -127,6 +118,7 @@ const Share = () => {
           },
           () => {
             // Upload completed successfully, now we can get the download URL
+            // setting the download url to the post
             getDownloadURL(uploadTask.snapshot.ref).then(
               async (downloadURL) => {
                 console.log("File available at", downloadURL);
@@ -142,14 +134,8 @@ const Share = () => {
         );
       }
     }
-    // else {
-    //   await axios.post("/posts", newPost);
-    //   setPostBeforeRefresh(newPost);
-    //   desc.current.value = "";
-    //   setFile(null);
-    //   setImageUpload(null);
-    // }
 
+// if there is no file upload post with text only
     if (!file) {
       try {
         await axios.post("/posts", newPost);
