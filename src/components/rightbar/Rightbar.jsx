@@ -12,20 +12,11 @@ import { io } from "socket.io-client";
 const Rightbar = ({ user }) => {
   const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
-  const [followed, setFollowed] = useState(
-    currentUser?.followings.includes(user?._id)
-  );
-  const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
-    useContext(SocketContext);
-  const socket = useRef();
-
-  useEffect(() => (socket.current = io("ws://localhost:8900")), []);
+  const [followed, setFollowed] = useState();
 
   useEffect(() => {
     const getFriends = async () => {
-      let cancel = true;
       try {
-        if (cancel) return;
         const friendList = await axios.get(
           "/users/friends/" + currentUser?._id
         );
@@ -33,10 +24,6 @@ const Rightbar = ({ user }) => {
       } catch (error) {
         console.log(error);
       }
-
-      return () => {
-        cancel = true;
-      };
     };
     // only if there is a user logged in, get friends
     currentUser && getFriends();
@@ -63,28 +50,31 @@ const Rightbar = ({ user }) => {
     setFollowed((prev) => !prev);
   };
 
-  // send to server user .emit, to get from server .on
-  useEffect(() => {
-    let componentMounted = true;
-    if (componentMounted) {
-      console.log('times');
-      // send current user details to socket server
-      socket.current.emit("addUser", currentUser?._id);
-      // get user from server
-      socket.current.on("getUsers", (users) => {
-        setCurrentlyOnlineFriends(
-          currentUser?.followings.filter((f) =>
-            users.some((u) => u.userId === f)
-          )
-        );
-      });
-    }
-    return () => {
-      componentMounted = false;
-    };
-  }, [setCurrentlyOnlineFriends, currentUser]);
-
   const HomeRightBar = () => {
+    const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
+      useContext(SocketContext);
+    const socket = useRef();
+
+    useEffect(() => (socket.current = io("ws://localhost:8900")), []);
+    // send to server user .emit, to get from server .on
+    useEffect(() => {
+      let componentMounted = true;
+      if (componentMounted) {
+        // send current user details to socket server
+        socket.current.emit("addUser", currentUser?._id);
+        // get user from server
+        socket.current.on("getUsers", (users) => {
+          setCurrentlyOnlineFriends(
+            currentUser?.followings.filter((f) =>
+              users.some((u) => u.userId === f)
+            )
+          );
+        });
+      }
+      return () => {
+        componentMounted = false;
+      };
+    }, [currentUser]);
     return (
       <>
         <div className="birthdayContainer">
@@ -97,10 +87,12 @@ const Rightbar = ({ user }) => {
         <img className="rightbarAd" src="/assets/ad.png" alt="" />
         <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendsList">
-          <ChatOnline
-            onlineUsers={currentlyOnlineFriends}
-            currentUserId={currentUser?._id}
-          />
+          {currentlyOnlineFriends && (
+            <ChatOnline
+              onlineUsers={currentlyOnlineFriends}
+              currentUserId={currentUser?._id}
+            />
+          )}
         </ul>
       </>
     );
@@ -113,6 +105,9 @@ const Rightbar = ({ user }) => {
   };
 
   const ProfileRightBar = () => {
+    useEffect(() => {
+      setFollowed(currentUser?.followings.includes(user?._id));
+    }, []);
     return (
       <>
         {user.username !== currentUser?.username && (

@@ -48,7 +48,7 @@ const Post = ({ post }) => {
   const submitHandler = async (e) => {
     e.preventDefault();
     let newComment = {
-      userId: user._id,
+      userId: currentUser._id,
       postId: post._id,
       content: content.current.value,
     };
@@ -88,17 +88,19 @@ const Post = ({ post }) => {
         <div className="postWrapper">
           <div className="postTop">
             <div className="postTopLeft">
-              <Link to={`profile/${user.username}`}>
-                <img
-                  className="postProfileImg"
-                  src={
-                    user.profilePicture
-                      ? user.profilePicture
-                      : PF + "person/man.png"
-                  }
-                  alt=""
-                />
-              </Link>
+              {user && (
+                <Link to={`profile/${user.username}`}>
+                  <img
+                    className="postProfileImg"
+                    src={
+                      user.profilePicture
+                        ? user.profilePicture
+                        : PF + "person/man.png"
+                    }
+                    alt=""
+                  />
+                </Link>
+              )}
 
               <span className="postUserName">{user.username}</span>
               <span className="postDate">{format(post.createdAt)}</span>
@@ -159,19 +161,21 @@ const Post = ({ post }) => {
             </div>
           </div>
         </div>
-        <div className="postComment">
-          <form className="shareBottom" onSubmit={submitHandler}>
-            <input
-              placeholder={`${currentUser.username} your thoughts on this post?`}
-              className="commentInput"
-              type="text"
-              ref={content}
-            />
-            <button type="submit" className="commentButton">
-              Comment
-            </button>
-          </form>
-        </div>
+        {currentUser && (
+          <div className="postComment">
+            <form className="shareBottom" onSubmit={submitHandler}>
+              <input
+                placeholder={`${currentUser?.username} your thoughts on this post?`}
+                className="commentInput"
+                type="text"
+                ref={content}
+              />
+              <button type="submit" className="commentButton">
+                Comment
+              </button>
+            </form>
+          </div>
+        )}
       </div>
       {showComments &&
         comments.map((comment) => (
