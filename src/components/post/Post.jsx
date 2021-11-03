@@ -28,7 +28,11 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`/users?userId=${post.userId}`);
+      const res = await axiosJWT.get(`/users?userId=${post.userId}`, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
       setUser(res.data);
     };
     fetchUser();
@@ -36,7 +40,11 @@ const Post = ({ post }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const res = await axios.get(`/comments/${post._id}`);
+      const res = await axiosJWT.get(`/comments/${post._id}`, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
       setComments(res.data);
     };
     fetchComments();
@@ -54,7 +62,11 @@ const Post = ({ post }) => {
     };
     setComments((prev) => [...prev, newComment]);
     try {
-      await axios.post("/comments", newComment);
+      await axiosJWT.post("/comments", newComment, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
       content.current.value = "";
     } catch (error) {}
   };

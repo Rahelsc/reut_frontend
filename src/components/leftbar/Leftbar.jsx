@@ -35,7 +35,7 @@ const Leftbar = () => {
 
         <hr className="leftbarHr" />
         <ul className="leftbarFriendList">
-          {user.followings.map((friend) => (
+          {user?.followings.map((friend) => (
             <Friend key={friend._id} friend={friend} />
           ))}
         </ul>

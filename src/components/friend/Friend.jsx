@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { axiosJWT } from "../../authFunctions";
 import "./friend.css";
 
 const Friend = ({ friend }) => {
@@ -9,7 +9,11 @@ const Friend = ({ friend }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`/users?userId=${friend}`);
+      const res = await axiosJWT.get(`/users?userId=${friend}`, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
       setUser(res.data);
     };
     fetchUser();

@@ -1,20 +1,26 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import "./comment.css"
+import { axiosJWT } from "../../authFunctions";
+import "./comment.css";
 
 const Comment = ({ comment }) => {
-    const [userComment, setUserComment] = useState({})
-    useEffect(() => {
-      const fetchUser = async () => {
-        const res = await axios.get(`/users?userId=${comment.userId}`);
-        setUserComment(res.data);
-      };
-      fetchUser();
-    }, [comment]);
+  const [userComment, setUserComment] = useState({});
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await axiosJWT.get(`/users?userId=${comment.userId}`, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
+      setUserComment(res.data);
+    };
+    fetchUser();
+  }, [comment]);
 
   return (
     <div className="comment commentBottomLeft">
-      {userComment && <span className="userNameComment">{userComment.username}: </span>}
+      {userComment && (
+        <span className="userNameComment">{userComment.username}: </span>
+      )}
       {comment.content}
     </div>
   );

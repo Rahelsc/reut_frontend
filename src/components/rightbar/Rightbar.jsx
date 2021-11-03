@@ -29,27 +29,6 @@ const Rightbar = ({ user }) => {
     currentUser && getFriends();
   }, [currentUser, user]);
 
-  const handleClickFriend = async () => {
-    console.log("followed: ", followed);
-    try {
-      if (followed) {
-        await axios.put("/users/" + user._id + "/unfollow", {
-          userId: currentUser?._id,
-        });
-        dispatch({ type: "UNFOLLOW", payload: user._id });
-      } else {
-        await axios.put("/users/" + user._id + "/follow", {
-          userId: currentUser?._id,
-        });
-        dispatch({ type: "FOLLOW", payload: user._id });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-
-    setFollowed((prev) => !prev);
-  };
-
   const HomeRightBar = () => {
     const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
       useContext(SocketContext);
@@ -106,8 +85,37 @@ const Rightbar = ({ user }) => {
 
   const ProfileRightBar = () => {
     useEffect(() => {
-      setFollowed(currentUser?.followings.includes(user?._id));
-    }, []);
+      const getFriendsNow = async () => {
+        const friends = await axios.get(`/users/friends/${currentUser._id}`);
+        console.log("friends.data: ", friends.data);
+        // checks whether current user whose profile we're viewing is contained in the friends array of current user
+        setFollowed(friends.data.filter(friend=>friend._id===user._id).length>0);
+      };
+      getFriendsNow();
+    }, [followed]);
+
+    const handleClickFriend = async () => {
+      console.log("followed: ", followed);
+      try {
+        if (followed) {
+          console.log("user._id: ", user._id);
+          console.log("currentUser: ", currentUser._id);
+          await axios.put("/users/" + user._id + "/unfollow", {
+            userId: currentUser?._id,
+          });
+          dispatch({ type: "UNFOLLOW", payload: user._id });
+        } else {
+          await axios.put("/users/" + user._id + "/follow", {
+            userId: currentUser?._id,
+          });
+          dispatch({ type: "FOLLOW", payload: user._id });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      setFollowed((prev) => !prev);
+    };
     return (
       <>
         {user.username !== currentUser?.username && (

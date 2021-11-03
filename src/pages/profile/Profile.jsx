@@ -18,7 +18,11 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axios.get(`/users?username=${username}`);
+      const res = await axiosJWT.get(`/users?username=${username}`, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
       setUser(res.data);
     };
     fetchUser();
