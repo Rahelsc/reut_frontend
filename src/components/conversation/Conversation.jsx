@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { axiosJWT } from "../../authFunctions";
 import "./conversation.css";
 
 const Conversation = ({ conv, currentUser }) => {
@@ -11,7 +11,11 @@ const Conversation = ({ conv, currentUser }) => {
 
     const getUser = async () => {
       try {
-        const res = await axios.get("/users?userId=" + friendId);
+        const res = await axiosJWT.get("/users?userId=" + friendId, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
         setUser(res.data);
       } catch (error) {
         console.log(error);

@@ -8,6 +8,7 @@ import { SocketContext } from "../../socketContext/SocketContext";
 import ChatOnline from "../chatOnline/ChatOnline";
 import { useRef } from "react";
 import { io } from "socket.io-client";
+import { axiosJWT } from "../../authFunctions";
 
 const Rightbar = ({ user }) => {
   const [friends, setFriends] = useState([]);
@@ -18,7 +19,12 @@ const Rightbar = ({ user }) => {
     const getFriends = async () => {
       try {
         const friendList = await axios.get(
-          "/users/friends/" + currentUser?._id
+          "/users/friends/" + currentUser?._id,
+          {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("jwtToken"),
+            },
+          }
         );
         setFriends(friendList?.data);
       } catch (error) {
@@ -86,10 +92,18 @@ const Rightbar = ({ user }) => {
   const ProfileRightBar = () => {
     useEffect(() => {
       const getFriendsNow = async () => {
-        const friends = await axios.get(`/users/friends/${currentUser._id}`);
-        console.log("friends.data: ", friends.data);
+        const friends = await axiosJWT.get(
+          `/users/friends/${currentUser._id}`,
+          {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("jwtToken"),
+            },
+          }
+        );
         // checks whether current user whose profile we're viewing is contained in the friends array of current user
-        setFollowed(friends.data.filter(friend=>friend._id===user._id).length>0);
+        setFollowed(
+          friends.data.filter((friend) => friend._id === user._id).length > 0
+        );
       };
       getFriendsNow();
     }, [followed]);
@@ -100,14 +114,30 @@ const Rightbar = ({ user }) => {
         if (followed) {
           console.log("user._id: ", user._id);
           console.log("currentUser: ", currentUser._id);
-          await axios.put("/users/" + user._id + "/unfollow", {
-            userId: currentUser?._id,
-          });
+          await axios.put(
+            "/users/" + user._id + "/unfollow",
+            {
+              userId: currentUser?._id,
+            },
+            {
+              headers: {
+                authorization: "Bearer " + localStorage.getItem("jwtToken"),
+              },
+            }
+          );
           dispatch({ type: "UNFOLLOW", payload: user._id });
         } else {
-          await axios.put("/users/" + user._id + "/follow", {
-            userId: currentUser?._id,
-          });
+          await axios.put(
+            "/users/" + user._id + "/follow",
+            {
+              userId: currentUser?._id,
+            },
+            {
+              headers: {
+                authorization: "Bearer " + localStorage.getItem("jwtToken"),
+              },
+            }
+          );
           dispatch({ type: "FOLLOW", payload: user._id });
         }
       } catch (error) {

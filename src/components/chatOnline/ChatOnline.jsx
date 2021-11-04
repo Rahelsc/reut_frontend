@@ -10,7 +10,11 @@ const ChatOnline = ({ onlineUsers, currentUserId, setCurrentChat }) => {
   useEffect(() => {
     const getFriends = async () => {
       try {
-        const res = await axios.get("/users/friends/" + currentUserId);
+        const res = await axios.get("/users/friends/" + currentUserId, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
         setFriends(res.data);
       } catch (error) {
         console.log(error);
@@ -26,7 +30,12 @@ const ChatOnline = ({ onlineUsers, currentUserId, setCurrentChat }) => {
   const handleClick = async (user) => {
     try {
       const res = await axios.get(
-        `/conversations/find/${currentUserId}/${user._id}`
+        `/conversations/find/${currentUserId}/${user._id}`,
+        {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        }
       );
       setCurrentChat(res.data);
     } catch (error) {

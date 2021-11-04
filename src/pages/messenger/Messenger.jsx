@@ -52,11 +52,14 @@ const Messenger = () => {
     });
   }, [user, setCurrentlyOnlineFriends]);
 
-
   useEffect(() => {
     const getConversations = async () => {
       try {
-        const res = await axios.get("/conversations/" + user._id);
+        const res = await axios.get("/conversations/" + user._id, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
         setConversations(res.data);
       } catch (error) {
         console.log(error);
@@ -68,7 +71,11 @@ const Messenger = () => {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        const res = await axios.get("/messages/" + currentChat?._id);
+        const res = await axios.get("/messages/" + currentChat?._id, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
         setMessages(res.data);
       } catch (error) {
         console.log(error);
@@ -92,7 +99,11 @@ const Messenger = () => {
       text: message.text,
     });
     try {
-      await axios.post("/messages", message);
+      await axios.post("/messages", message, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("jwtToken"),
+        },
+      });
       setMessages((prev) => [...prev, message]);
       setNewMessage("");
     } catch (error) {

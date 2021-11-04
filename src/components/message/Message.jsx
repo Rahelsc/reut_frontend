@@ -1,7 +1,7 @@
 import "./message.css";
 import { format } from "timeago.js";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { axiosJWT } from "../../authFunctions";
 
 const Message = ({ own, message }) => {
   const [user, setUser] = useState(null);
@@ -10,7 +10,11 @@ const Message = ({ own, message }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await axios.get("/users?userId=" + message.sender);
+        const res = await axiosJWT.get("/users?userId=" + message.sender, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
         setUser(res.data);
       } catch (error) {
         console.log(error);

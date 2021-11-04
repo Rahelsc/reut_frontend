@@ -1,7 +1,6 @@
 import "./post.css";
 import { MoreVert } from "@material-ui/icons";
 import { useContext, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -73,9 +72,17 @@ const Post = ({ post }) => {
 
   const likeHandler = () => {
     try {
-      axios.put("/posts/" + post._id + "/like", {
-        userId: currentUser._id,
-      });
+      axiosJWT.put(
+        "/posts/" + post._id + "/like",
+        {
+          userId: currentUser._id,
+        },
+        {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        }
+      );
       setLike(isliked ? like - 1 : like + 1);
       setIsliked(!isliked);
     } catch (error) {}
