@@ -18,14 +18,16 @@ function App() {
         <Route path="/" exact>
           {user ? <Home /> : <Register />}
         </Route>
-        <Route path="/login">{user ? <Redirect to="/" /> : <Login />}</Route>
-        <Route path="/register">
+        <Route path="/login" exact>
+          {user ? <Redirect to="/" /> : <Login />}
+        </Route>
+        <Route path="/register" exact>
           {user ? <Redirect to="/" /> : <Register />}
         </Route>
-        <Route path="/messenger">
+        <Route path="/messenger" exact>
           {!user ? <Redirect to="/login" /> : <Messenger />}
         </Route>
-        <Route path="/profile/:username">
+        <Route path="/profile/:username" exact>
           {otherUsers ? <Profile /> : <Redirect to="/" />}
         </Route>
         <Route>

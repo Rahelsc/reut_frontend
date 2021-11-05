@@ -13,10 +13,6 @@ import { axiosJWT } from "../../authFunctions";
 const Rightbar = ({ user }) => {
   const { user: currentUser, dispatch } = useContext(AuthContext);
 
-  useEffect(() => {
-    console.log("user: ", user);
-  }, []);
-
   const HomeRightBar = () => {
     const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
       useContext(SocketContext);

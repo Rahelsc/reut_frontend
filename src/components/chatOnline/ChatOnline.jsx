@@ -8,6 +8,7 @@ const ChatOnline = ({ onlineUsers, currentUserId, setCurrentChat }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   useEffect(() => {
+    let takeAction = true;
     const getFriends = async () => {
       try {
         const res = await axios.get("/users/friends/" + currentUserId, {
@@ -20,7 +21,10 @@ const ChatOnline = ({ onlineUsers, currentUserId, setCurrentChat }) => {
         console.log(error);
       }
     };
-    getFriends();
+    if (takeAction) {
+      getFriends();
+    }
+    return () => (takeAction = false);
   }, [currentUserId]);
 
   useEffect(() => {
