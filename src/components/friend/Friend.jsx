@@ -1,20 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { axiosJWT } from "../../authFunctions";
 import "./friend.css";
+import { OtherUsersContext } from "../../otherUsersContext/OtherUsersContext";
+
 
 const Friend = ({ friend }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [user, setUser] = useState();
+  const { setotherUsers } = useContext(OtherUsersContext);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await axiosJWT.get(`/users?userId=${friend}`, {
-        headers: {
-          authorization: "Bearer " + localStorage.getItem("jwtToken"),
-        },
-      });
-      setUser(res.data);
+      try {
+        const res = await axiosJWT.get(`/users?userId=${friend}`, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
+        setUser(res.data);
+        setotherUsers(true)
+      } catch (error) {
+        setotherUsers(false)
+      }
     };
     fetchUser();
   }, [friend]);

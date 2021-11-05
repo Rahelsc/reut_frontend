@@ -24,7 +24,6 @@ const Share = () => {
       userId: user._id,
       desc: desc.current.value,
     };
-    console.log("b4 file.filename ", file.name);
 
     if (file) {
       const API_ENDPOINT = "http://127.0.0.1:5000";
@@ -153,7 +152,7 @@ const Share = () => {
             className="shareProfileImg"
             src={
               user.profilePicture
-                ? PF + user.profilePicture
+                ? user.profilePicture
                 : PF + "person/man.png"
             }
             alt=""

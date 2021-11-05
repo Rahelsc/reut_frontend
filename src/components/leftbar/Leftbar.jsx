@@ -8,6 +8,7 @@ import { useContext } from "react";
 const Leftbar = () => {
 
   const {user} = useContext(AuthContext)
+  
   return (
     <div className="leftbarContainer">
       <div className="leftbarWrapper">

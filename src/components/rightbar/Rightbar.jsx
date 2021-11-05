@@ -1,6 +1,6 @@
 import "./rightbar.css";
 import UserFriend from "../user friend/UserFriend";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useLayoutEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
@@ -11,29 +11,11 @@ import { io } from "socket.io-client";
 import { axiosJWT } from "../../authFunctions";
 
 const Rightbar = ({ user }) => {
-  const [friends, setFriends] = useState([]);
   const { user: currentUser, dispatch } = useContext(AuthContext);
-  const [followed, setFollowed] = useState();
 
   useEffect(() => {
-    const getFriends = async () => {
-      try {
-        const friendList = await axios.get(
-          "/users/friends/" + currentUser?._id,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("jwtToken"),
-            },
-          }
-        );
-        setFriends(friendList?.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    // only if there is a user logged in, get friends
-    currentUser && getFriends();
-  }, [currentUser, user]);
+    console.log("user: ", user);
+  }, []);
 
   const HomeRightBar = () => {
     const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
@@ -90,30 +72,37 @@ const Rightbar = ({ user }) => {
   };
 
   const ProfileRightBar = () => {
-    useEffect(() => {
+    const [friends, setFriends] = useState([]);
+    const [followed, setFollowed] = useState();
+
+    // useLayoutEffect to make sure the fetch is done before the component is rendered
+    useLayoutEffect(() => {
       const getFriendsNow = async () => {
-        const friends = await axiosJWT.get(
-          `/users/friends/${currentUser._id}`,
-          {
-            headers: {
-              authorization: "Bearer " + localStorage.getItem("jwtToken"),
-            },
-          }
-        );
-        // checks whether current user whose profile we're viewing is contained in the friends array of current user
+        let friends = await axiosJWT.get(`/users/friends/${currentUser?._id}`, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
         setFollowed(
           friends.data.filter((friend) => friend._id === user._id).length > 0
         );
+        if (currentUser?._id !== user?._id) {
+          friends = await axiosJWT.get(`/users/friends/${user?._id}`, {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("jwtToken"),
+            },
+          });
+        }
+        setFriends(friends.data);
+        // checks whether current user whose profile we're viewing is contained in the friends array of current user
       };
       getFriendsNow();
-    }, [followed]);
+    }, [followed, user]);
 
     const handleClickFriend = async () => {
       console.log("followed: ", followed);
       try {
         if (followed) {
-          console.log("user._id: ", user._id);
-          console.log("currentUser: ", currentUser._id);
           await axios.put(
             "/users/" + user._id + "/unfollow",
             {
@@ -173,15 +162,9 @@ const Rightbar = ({ user }) => {
         </div>
         <h4 className="rightbarTitle">User friends</h4>
         <div className="rightbarFollowings">
-          {currentUser?._id !== user._id && user?.followings
-            ? user.followings.map((friend) => (
-                <UserFriend key={friend._id} user={friend} />
-              ))
-            : currentUser
-            ? friends.map((friend) => (
-                <UserFriend key={friend._id} user={friend} />
-              ))
-            : ""}
+          {friends.map((friend) => (
+            <UserFriend key={friend._id} user={friend} />
+          ))}
         </div>
       </>
     );

@@ -8,6 +8,7 @@ import { logout } from "../../authFunctions";
 const Topbar = () => {
   const { user, dispatch } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+
   return (
     <div className="topbarContainer">
       <div className="topbarLeft">
@@ -33,7 +34,7 @@ const Topbar = () => {
             <img
               src={
                 user.profilePicture
-                  ? PF + user.profilePicture
+                  ? user.profilePicture
                   : PF + "person/man.png"
               }
               alt=""
@@ -44,9 +45,11 @@ const Topbar = () => {
           ""
         )}
         {user ? (
-          <span className="topbarLink" onClick={() => logout(dispatch)}>
-            Logout
-          </span>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <span className="topbarLink" onClick={() => logout(dispatch)}>
+              Logout
+            </span>
+          </Link>
         ) : (
           ""
         )}
