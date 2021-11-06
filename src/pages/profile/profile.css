@@ -62,3 +62,19 @@
 .profileRightBottom {
   display: flex;
 }
+
+.noValidTextContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noValidUserText {
+  margin: auto;
+  position: absolute;
+  top: 10%;
+  font-size: 50px;
+  color: rgb(177, 177, 177);
+  cursor: default;
+}

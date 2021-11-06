@@ -7,11 +7,9 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext.js";
 import Messenger from "./pages/messenger/Messenger.jsx";
 import PageNotFound from "./pages/404/PageNotFound.jsx";
-import { OtherUsersContext } from "./otherUsersContext/OtherUsersContext";
 
 function App() {
   const { user } = useContext(AuthContext);
-  const { otherUsers } = useContext(OtherUsersContext);
   return (
     <BrowserRouter>
       <Switch>
@@ -28,7 +26,7 @@ function App() {
           {!user ? <Redirect to="/login" /> : <Messenger />}
         </Route>
         <Route path="/profile/:username" exact>
-          {otherUsers ? <Profile /> : <Redirect to="/" />}
+          <Profile />
         </Route>
         <Route>
           <PageNotFound />

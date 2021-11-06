@@ -1,6 +1,6 @@
 import "./rightbar.css";
 import UserFriend from "../user friend/UserFriend";
-import { useContext, useEffect, useState, useLayoutEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
@@ -71,18 +71,20 @@ const Rightbar = ({ user }) => {
     const [friends, setFriends] = useState([]);
     const [followed, setFollowed] = useState();
 
-    // useLayoutEffect to make sure the fetch is done before the component is rendered
-    useLayoutEffect(() => {
+    useEffect(() => {
       const getFriendsNow = async () => {
-        let friends = await axiosJWT.get(`/users/friends/${currentUser?._id}`, {
-          headers: {
-            authorization: "Bearer " + localStorage.getItem("jwtToken"),
-          },
-        });
-        setFollowed(
-          friends.data.filter((friend) => friend._id === user._id).length > 0
-        );
-        if (currentUser?._id !== user?._id) {
+        let friends;
+        if (currentUser) {
+          friends = await axiosJWT.get(`/users/friends/${currentUser?._id}`, {
+            headers: {
+              authorization: "Bearer " + localStorage.getItem("jwtToken"),
+            },
+          });
+          setFollowed(
+            friends.data.filter((friend) => friend._id === user._id).length > 0
+          );
+        }
+        if (user & currentUser && currentUser?._id !== user?._id) {
           friends = await axiosJWT.get(`/users/friends/${user?._id}`, {
             headers: {
               authorization: "Bearer " + localStorage.getItem("jwtToken"),

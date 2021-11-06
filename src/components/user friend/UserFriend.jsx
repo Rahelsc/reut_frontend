@@ -1,15 +1,8 @@
-import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./UserFriend.css";
-import { OtherUsersContext } from "../../otherUsersContext/OtherUsersContext";
 
 const UserFriend = ({ user }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const { setotherUsers } = useContext(OtherUsersContext);
-  
-  useEffect(() => {
-    setotherUsers(true);
-  }, []);
 
   return (
     <div>
