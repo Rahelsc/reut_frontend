@@ -11,6 +11,7 @@ const Topbar = () => {
   const searchTerm = useRef("");
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [searchResults, setSearchResults] = useState();
+  const [showSearchBox, setShowSearchBox] = useState(false);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -23,11 +24,15 @@ const Topbar = () => {
           },
         }
       );
-      console.log(res.data);
       setSearchResults(res.data);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const clearAll = () => {
+    setSearchResults(undefined);
+    setShowSearchBox(false);
     searchTerm.current.value = "";
   };
 
@@ -43,10 +48,12 @@ const Topbar = () => {
           <div className="searchbar">
             <form onSubmit={handleSearch}>
               <Search className="searchIcon" fontSize="small" />
+
               <input
                 ref={searchTerm}
                 placeholder="Search for a friend"
                 className="searchInput"
+                onFocus={() => setShowSearchBox(true)}
               />
             </form>
           </div>
@@ -81,10 +88,18 @@ const Topbar = () => {
           )}
         </div>
       </div>
-      {searchResults &&
-        searchResults.map((sr) => (
-          <SearchResult className="searchResuls" key={sr._id} searchResult={sr} />
-        ))}
+      {showSearchBox && searchResults && (
+        <>
+          <div className="searchResults">
+            {searchResults.map((sr) => (
+              <SearchResult key={sr._id} searchResult={sr} />
+            ))}
+            <button className="clearButton" onClick={clearAll}>
+              Clear
+            </button>
+          </div>
+        </>
+      )}
     </>
   );
 };

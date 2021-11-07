@@ -11,8 +11,8 @@
   padding-top: 25px 0 25px 0;
   border: var(--purple) 1px solid;
   background-color: var(--gray);
+  width: 25vw;
 
-  width: 100%;
   border-radius: 10px;
   box-shadow: 2px 3px 32px 0px rgba(93, 74, 74, 0.6);
   -webkit-box-shadow: 2px 3px 32px 0px rgba(93, 74, 74, 0.6);
