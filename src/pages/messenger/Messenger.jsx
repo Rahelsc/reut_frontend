@@ -38,7 +38,7 @@ const Messenger = () => {
       currentChat?.members.includes(msgFromFriend.sender) &&
       // use of arrow function to avoid adding messages as a dependency
       setMessages((prev) => [...prev, msgFromFriend]);
-  }, [msgFromFriend, currentChat]);
+  }, [msgFromFriend]);
 
   // send to server user .emit, to get from server .on
   useEffect(() => {
