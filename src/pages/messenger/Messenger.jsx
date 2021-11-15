@@ -6,8 +6,13 @@ import ChatOnline from "../../components/chatOnline/ChatOnline";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { SocketContext } from "../../socketContext/SocketContext";
+import {
+  disconnectSocket,
+  innitiateSocketConnection,
+  sendMessage,
+  subscribeToMessages,
+} from "../../socketio.service";
 
 const Messenger = () => {
   const [conversations, setConversations] = useState([]);
@@ -16,41 +21,57 @@ const Messenger = () => {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
-  const [msgFromFriend, setMsgFromFriend] = useState(null);
   const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
     useContext(SocketContext);
-  // connect to websocket
-  const socket = useRef();
+
+  const tokenForChat = useRef(localStorage.getItem("jwtToken"));
 
   useEffect(() => {
-    socket.current = io("ws://localhost:8900");
-    socket.current.on("getMessage", (data) => {
-      setMsgFromFriend({
-        sender: data.senderId,
-        text: data.text,
-        conversationId: currentChat?._id,
+    // innitiate connection only if user is logged in (meaning we have his token)
+    if (tokenForChat) {
+      innitiateSocketConnection();
+      subscribeToMessages((err, data) => {
+        console.log(data);
+        setMessages((prev) => [...prev, data]);
       });
-    });
-  }, [currentChat]);
+      return () => {
+        disconnectSocket();
+      };
+    }
+  }, [tokenForChat]);
 
-  useEffect(() => {
-    msgFromFriend &&
-      currentChat?.members.includes(msgFromFriend.sender) &&
-      // use of arrow function to avoid adding messages as a dependency
-      setMessages((prev) => [...prev, msgFromFriend]);
-  }, [msgFromFriend]);
-
-  // send to server user .emit, to get from server .on
-  useEffect(() => {
-    // send current user details to socket server
-    socket.current.emit("addUser", user._id);
-    // get user from server
-    socket.current.on("getUsers", (users) => {
-      setCurrentlyOnlineFriends(
-        user.followings.filter((f) => users.some((u) => u.userId === f))
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const message = {
+      sender: user._id,
+      text: newMessage,
+      conversationId: currentChat._id,
+    };
+    console.log("reciever: ", currentChat?.members);
+    if (currentChat?.members.find((m) => m !== user._id)) {
+      sendMessage(
+        {
+          message,
+          roomName: String(currentChat?.members.find((m) => m !== user._id)),
+        },
+        (cb) => {
+          console.log(cb);
+        }
       );
-    });
-  }, [user, setCurrentlyOnlineFriends]);
+      setMessages((prev) => [...prev, message]);
+      try {
+        await axios.post("/messages", message, {
+          headers: {
+            authorization: "Bearer " + localStorage.getItem("jwtToken"),
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        console.log("messages: ", messages);
+        setNewMessage("");
+      }
+    }
+  };
 
   useEffect(() => {
     const getConversations = async () => {
@@ -83,33 +104,6 @@ const Messenger = () => {
     };
     getMessages();
   }, [currentChat]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const message = {
-      sender: user._id,
-      text: newMessage,
-      conversationId: currentChat._id,
-    };
-
-    const recieverId = currentChat.members.find((m) => m !== message.sender);
-    socket.current.emit("sendMessage", {
-      senderId: message.sender,
-      recieverId,
-      text: message.text,
-    });
-    try {
-      await axios.post("/messages", message, {
-        headers: {
-          authorization: "Bearer " + localStorage.getItem("jwtToken"),
-        },
-      });
-      setMessages((prev) => [...prev, message]);
-      setNewMessage("");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
