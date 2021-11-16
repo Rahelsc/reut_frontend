@@ -7,7 +7,7 @@ const Conversation = ({ conv, currentUser }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   useEffect(() => {
-    const friendId = conv.members.find((mem) => mem !== currentUser._id);
+    const friendId = conv?.members?.find((mem) => mem !== currentUser._id);
 
     const getUser = async () => {
       try {

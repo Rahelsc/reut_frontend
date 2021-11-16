@@ -31,6 +31,14 @@ export const subscribeToMessages = (cb) => {
   });
 };
 
+export const subscribeToUsers = (cb) => {
+  if (!socket) return true;
+  socket.on("getUsers", (users) => {
+    console.log("got users");
+    return cb(null, users);
+  });
+};
+
 export const sendMessage = ({ message, roomName }, cb) => {
   if (socket) {
     socket.emit("message", { message, roomName }, cb);

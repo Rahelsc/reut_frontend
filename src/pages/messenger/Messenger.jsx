@@ -12,6 +12,7 @@ import {
   innitiateSocketConnection,
   sendMessage,
   subscribeToMessages,
+  subscribeToUsers,
 } from "../../socketio.service";
 
 const Messenger = () => {
@@ -33,6 +34,10 @@ const Messenger = () => {
       subscribeToMessages((err, data) => {
         console.log(data);
         setMessages((prev) => [...prev, data]);
+      });
+      subscribeToUsers((err, data) => {
+        console.log(data);
+        setCurrentlyOnlineFriends(data);
       });
       return () => {
         disconnectSocket();
@@ -67,9 +72,9 @@ const Messenger = () => {
         });
       } catch (error) {
         console.log(error);
-        console.log("messages: ", messages);
-        setNewMessage("");
       }
+      console.log("messages: ", messages);
+      setNewMessage("");
     }
   };
 
@@ -81,6 +86,7 @@ const Messenger = () => {
             authorization: "Bearer " + localStorage.getItem("jwtToken"),
           },
         });
+        console.log("get conversations");
         setConversations(res.data);
       } catch (error) {
         console.log(error);
@@ -167,6 +173,7 @@ const Messenger = () => {
               onlineUsers={currentlyOnlineFriends}
               currentUserId={user._id}
               setCurrentChat={setCurrentChat}
+              setConversations={setConversations}
             />
           </div>
         </div>
