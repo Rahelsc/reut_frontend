@@ -14,30 +14,8 @@ const Rightbar = ({ user }) => {
   const { user: currentUser, dispatch } = useContext(AuthContext);
 
   const HomeRightBar = () => {
-    const { currentlyOnlineFriends, setCurrentlyOnlineFriends } =
-      useContext(SocketContext);
-    const socket = useRef();
+    const { currentlyOnlineFriends } = useContext(SocketContext);
 
-    // useEffect(() => (socket.current = io("ws://localhost:8900")), []);
-    // // send to server user .emit, to get from server .on
-    // useEffect(() => {
-    //   let componentMounted = true;
-    //   if (componentMounted) {
-    //     // send current user details to socket server
-    //     socket.current.emit("addUser", currentUser?._id);
-    //     // get user from server
-    //     socket.current.on("getUsers", (users) => {
-    //       setCurrentlyOnlineFriends(
-    //         currentUser?.followings.filter((f) =>
-    //           users.some((u) => u.userId === f)
-    //         )
-    //       );
-    //     });
-    //   }
-    //   return () => {
-    //     componentMounted = false;
-    //   };
-    // }, [currentUser]);
     return (
       <>
         <div className="birthdayContainer">
@@ -49,14 +27,14 @@ const Rightbar = ({ user }) => {
         </div>
         <img className="rightbarAd" src="/assets/ad.png" alt="" />
         <h4 className="rightbarTitle">Online Friends</h4>
-        {/* <ul className="rightbarFriendsList">
+        <ul className="rightbarFriendsList">
           {currentlyOnlineFriends && (
             <ChatOnline
               onlineUsers={currentlyOnlineFriends}
               currentUserId={currentUser?._id}
             />
           )}
-        </ul> */}
+        </ul>
       </>
     );
   };
