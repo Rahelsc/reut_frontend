@@ -29,7 +29,9 @@ const Conversation = ({ conv, currentUser }) => {
       {user && (
         <>
           <img
-            src={user?.profilePicture || PF + "/person/man.png"}
+            src={
+              user?.profilePicture || PF + "/person/no-user-image-icon-3.jpeg"
+            }
             alt=""
             className="conversationImg"
           />

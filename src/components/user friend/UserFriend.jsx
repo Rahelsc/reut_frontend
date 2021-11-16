@@ -13,7 +13,9 @@ const UserFriend = ({ user }) => {
       >
         <img
           src={
-            user.profilePicture ? user.profilePicture : PF + "/person/man.png"
+            user.profilePicture
+              ? user.profilePicture
+              : PF + "/person/no-user-image-icon-3.jpeg"
           }
           alt=""
           className="rightbarFollowingImg"

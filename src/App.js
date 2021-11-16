@@ -9,7 +9,6 @@ import Messenger from "./pages/messenger/Messenger.jsx";
 import PageNotFound from "./pages/404/PageNotFound.jsx";
 
 function App() {
-
   const { user } = useContext(AuthContext);
   return (
     <BrowserRouter>

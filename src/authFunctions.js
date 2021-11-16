@@ -26,9 +26,9 @@ export const logout = async (dispatch) => {
         },
       }
     );
-    dispatch({ type: "LOGOUT" });
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("jwtRefreshToken");
+    dispatch({ type: "LOGOUT" });
   } catch (error) {
     console.log(error);
   }

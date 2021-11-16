@@ -8,6 +8,7 @@ import { useHistory, useParams } from "react-router";
 import { Chip } from "@material-ui/core";
 import { AuthContext } from "../../context/AuthContext";
 import { axiosJWT, logout } from "../../authFunctions";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
@@ -37,6 +38,8 @@ const Profile = () => {
   }, [username]);
 
   const handleDelete = async () => {
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("jwtRefreshToken");
     try {
       await axiosJWT.delete(`/users/${currentUser._id}`, {
         headers: {
@@ -65,15 +68,20 @@ const Profile = () => {
                 />
                 <img
                   className="profileUserImg"
-                  src={user.profilePicture || PF + "/person/man.png"}
+                  src={
+                    user.profilePicture ||
+                    PF + "/person/no-user-image-icon-3.jpeg"
+                  }
                   alt=""
                 />
                 {currentUser && currentUser._id === user._id ? (
-                  <Chip
-                    label="Delete Profile"
-                    className="deleteButton"
-                    onDelete={handleDelete}
-                  />
+                  <Link to="/">
+                    <Chip
+                      label="Delete Profile"
+                      className="deleteButton"
+                      onDelete={handleDelete}
+                    />
+                  </Link>
                 ) : (
                   ""
                 )}

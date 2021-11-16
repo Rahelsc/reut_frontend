@@ -68,7 +68,7 @@ const Topbar = () => {
                 src={
                   user.profilePicture
                     ? user.profilePicture
-                    : PF + "person/man.png"
+                    : PF + "person/no-user-image-icon-3.jpeg"
                 }
                 alt=""
                 className="topbarImg"

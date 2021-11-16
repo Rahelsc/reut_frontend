@@ -6,8 +6,6 @@ import { AuthContext } from "../../context/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
 import { SocketContext } from "../../socketContext/SocketContext";
 import ChatOnline from "../chatOnline/ChatOnline";
-import { useRef } from "react";
-import { io } from "socket.io-client";
 import { axiosJWT } from "../../authFunctions";
 
 const Rightbar = ({ user }) => {
@@ -26,7 +24,7 @@ const Rightbar = ({ user }) => {
           </span>
         </div>
         <img className="rightbarAd" src="/assets/ad.png" alt="" />
-        <h4 className="rightbarTitle">Online Friends</h4>
+        {/* <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendsList">
           {currentlyOnlineFriends && (
             <ChatOnline
@@ -34,7 +32,7 @@ const Rightbar = ({ user }) => {
               currentUserId={currentUser?._id}
             />
           )}
-        </ul>
+        </ul> */}
       </>
     );
   };
@@ -62,7 +60,8 @@ const Rightbar = ({ user }) => {
             friends.data.filter((friend) => friend._id === user._id).length > 0
           );
         }
-        if (user & currentUser && currentUser?._id !== user?._id) {
+        console.log("user & currentUser: " + user);
+        if (user && currentUser && currentUser?._id !== user?._id) {
           friends = await axiosJWT.get(`/users/friends/${user?._id}`, {
             headers: {
               authorization: "Bearer " + localStorage.getItem("jwtToken"),

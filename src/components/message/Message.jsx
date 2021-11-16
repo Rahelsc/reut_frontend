@@ -29,7 +29,9 @@ const Message = ({ own, message }) => {
         <img
           className="messageImg"
           src={
-            user?.profilePicture ? user.profilePicture : PF + "/person/man.png"
+            user?.profilePicture
+              ? user.profilePicture
+              : PF + "/person/no-user-image-icon-3.jpeg"
           }
           alt=""
         />

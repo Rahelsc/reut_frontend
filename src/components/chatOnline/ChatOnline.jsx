@@ -92,7 +92,7 @@ const ChatOnline = ({
           <div className="chatOnlineImgContainer">
             <img
               className="chatOnlineImg"
-              src={of?.profilePic || PF + "/person/man.png  "}
+              src={of?.profilePic || PF + "/person/no-user-image-icon-3.jpeg  "}
               alt=""
             />
             <div className="chatOnlineBadge"></div>

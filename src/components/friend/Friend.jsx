@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { axiosJWT } from "../../authFunctions";
 import "./friend.css";
 
-
 const Friend = ({ friend }) => {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [user, setUser] = useState();
@@ -36,7 +35,7 @@ const Friend = ({ friend }) => {
               src={
                 user?.profilePicture
                   ? user?.profilePicture
-                  : PF + "/person/man.png"
+                  : PF + "/person/no-user-image-icon-3.jpeg"
               }
               alt=""
               className="leftbarFriendImg"

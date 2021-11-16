@@ -28,7 +28,6 @@ const Share = () => {
     if (file) {
       const API_ENDPOINT = "http://127.0.0.1:5000";
       const tryAndFindFaces = async () => {
-
         var myHeaders = new Headers();
         myHeaders.append("Accept", "application/json");
 
@@ -60,20 +59,19 @@ const Share = () => {
           .catch((error) => console.log("error", error));
       };
 
-      // Create the file metadata
-      /** @type {any} */
-      const metadata = {
-        contentType: "image/jpeg",
-      };
-
-      // Upload file and metadata to the object 'images/mountains.jpg'
-      const storageRef = ref(storage, "images/" + file.name);
-      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
       await tryAndFindFaces();
-
 
       // if no faces were detected - upload image from this server to firebase storage
       if (!newPost?.img) {
+        // Create the file metadata
+        /** @type {any} */
+        const metadata = {
+          contentType: "image/jpeg",
+        };
+        // Upload file and metadata to the object 'images/mountains.jpg'
+        const storageRef = ref(storage, "images/" + file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+        console.log("no faces");
         // Listen for state changes, errors, and completion of the upload.
         await uploadTask.on(
           "state_changed",
@@ -134,7 +132,7 @@ const Share = () => {
       }
     }
 
-// if there is no file upload post with text only
+    // if there is no file upload post with text only
     if (!file) {
       try {
         await axios.post("/posts", newPost);
@@ -153,7 +151,7 @@ const Share = () => {
             src={
               user.profilePicture
                 ? user.profilePicture
-                : PF + "person/man.png"
+                : PF + "person/no-user-image-icon-3.jpeg"
             }
             alt=""
           />
